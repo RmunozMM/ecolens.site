@@ -1,0 +1,56 @@
+# ==== Generales macOS / editor ====
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# ==== Logs del sitio ====
+logs/
+
+# ==== Archivos sensibles ====
+credenciales
+.env
+.env.*
+config/params-local.php
+config/db-local.php
+
+# ==== PHP / Yii2 (panel-admin) ====
+panel-admin/vendor/
+panel-admin/runtime/
+panel-admin/web/assets/
+panel-admin/tests/_output/
+
+# ==== PHP / Yii2 (sitio) ====
+sitio/vendor/
+sitio/runtime/
+sitio/web/assets/
+sitio/tests/_output/
+
+# ==== Python (APIs) ====
+__pycache__/
+*.pyc
+venv/
+.venv/
+env/
+
+# ==== Node / builds frontend ====
+node_modules/
+dist/
+
+# ==== Modelos IA pesados (no subir a GitHub) ====
+# Carpeta de modelos (pesos, checkpoints, etc.)
+apis/modelo_router_api/models/
+
+# Cualquier subcarpeta de modelos expertos (por si cambias nombres)
+apis/modelo_router_api/models_experts/
+apis/modelo_router_api/models/models_experts/
+
+# Zips grandes relacionados al router / modelos
+apis/modelo_router_api.zip
+apis/modelo_router_api/*.zip
+apis/modelo_router_api/models/*.zip
+
+# Pesos típicos de IA (mejor fuera del repo)
+*.pth
+*.pt
+*.onnx

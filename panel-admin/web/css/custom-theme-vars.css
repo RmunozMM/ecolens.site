@@ -1,0 +1,34 @@
+:root {
+  --color_bg_page: Yii::$app->params["color_bg_page"];
+  --color_bg_sidebar: Yii::$app->params["color_bg_sidebar"];
+  --color_text_sidebar: Yii::$app->params["color_text_sidebar"];
+  --color_scrollbar_thumb: Yii::$app->params["color_scrollbar_thumb"];
+  --color_navlink_bg: Yii::$app->params["color_navlink_bg"];
+  --color_navlink_bg_hover: Yii::$app->params["color_navlink_bg_hover"];
+  --color_text_navlink: Yii::$app->params["color_text_navlink"];
+  --color_text_inverse: Yii::$app->params["color_text_inverse"];
+  --color_nav_active_bg: Yii::$app->params["color_nav_active_bg"];
+  --color_nav_active_text: Yii::$app->params["color_nav_active_text"];
+  --color_nav_active_shadow: Yii::$app->params["color_nav_active_shadow"];
+  --color_shadow_medium: Yii::$app->params["color_shadow_medium"];
+  --color_shadow_light: Yii::$app->params["color_shadow_light"];
+  --color_shadow_xlight: Yii::$app->params["color_shadow_xlight"];
+  --color_btn_toggle: Yii::$app->params["color_btn_toggle"];
+  --color_btn_toggle_hover: Yii::$app->params["color_btn_toggle_hover"];
+  --color_bg_topnav: Yii::$app->params["color_bg_topnav"];
+  --color_border_topnav: Yii::$app->params["color_border_topnav"];
+  --color_topnav_toggle: Yii::$app->params["color_topnav_toggle"];
+  --color_bg_widget: Yii::$app->params["color_bg_widget"];
+  --color_list_hover: Yii::$app->params["color_list_hover"];
+  --color_accordion_text: Yii::$app->params["color_accordion_text"];
+  --color_accordion_border: Yii::$app->params["color_accordion_border"];
+  --color_accordion_bg_active: Yii::$app->params["color_accordion_bg_active"];
+  --color_list_border: Yii::$app->params["color_list_border"];
+  --color_text_secondary: Yii::$app->params["color_text_secondary"];
+  --color_sort_icon: Yii::$app->params["color_sort_icon"];
+  --color_not_set: Yii::$app->params["color_not_set"];
+  --color_footer_legacy: Yii::$app->params["color_footer_legacy"];
+  --color_text_primary: Yii::$app->params["color_text_primary"];
+  --color_btn_primary: Yii::$app->params["color_btn_primary"];
+  --color_btn_primary_hover: Yii::$app->params["color_btn_primary_hover"];
+}

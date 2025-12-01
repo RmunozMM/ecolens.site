@@ -1,0 +1,946 @@
+/* ====================================== */
+/* UNIFICACIÓN: custom-theme + site.css      */
+/* ====================================== */
+
+/* ====================================== */
+/* CONFIGURACIÓN GENERAL (custom-theme) */
+/* ====================================== */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f7f7f7;
+}
+
+/* Contenedor global: sidebar + zona derecha */
+.app-wrapper {
+    display: flex;
+    height: 100vh; /* Toda la ventana */
+}
+
+/* ====================================== */
+/* SIDEBAR (MENÚ LATERAL) FLEXIBLE */
+/* ====================================== */
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 300px;
+    min-width: 70px;
+    height: 100vh;
+    background: #2A3F54;
+    color: #ECF0F1;
+    transition: width 0.3s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 3px 0px 10px rgba(0,0,0,0.1);
+    z-index: 1020;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sidebar-header,
+.sidebar-user,
+.sidebar-footer {
+    /* Conservar altura natural */
+}
+
+/* ====================================== */
+/* MENÚ LATERAL: crece y hace scroll solo aquí */
+/* ====================================== */
+.sidebar-menu {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 10px 0 100px ;
+}
+.sidebar-menu::-webkit-scrollbar {
+    width: 6px;
+}
+.sidebar-menu::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 3px;
+}
+
+/* ====================================== */
+/* COLLAPSED SIDEBAR */
+/* ====================================== */
+body.sidebar-collapsed #sidebar {
+    width: 70px !important;
+    min-width: 70px !important;
+    max-width: 70px !important;
+}
+
+/* ========================= */
+/* LOGO Y NOMBRE COLLAPSED */
+/* ========================= */
+.sidebar-header {
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centrado del logo: Esta regla debería centrar el contenido del header */
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    height: 48px;
+    padding: 0 !important;
+    margin-bottom: 12px;
+    background: transparent;
+}
+.sidebar-logo {
+    max-width: 150px;
+    transition: all 0.3s;
+}
+body.sidebar-collapsed #sidebar .sidebar-logo {
+    max-width: 40px;
+    margin: 0;
+}
+.sidebar-logo-text-strong,
+.sidebar-logo-text-light {
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    transition: opacity 0.2s;
+}
+.sidebar-logo-text-light {
+    font-weight: 400;
+    color: #fff;
+}
+body.sidebar-collapsed #sidebar .sidebar-logo-text-strong,
+body.sidebar-collapsed #sidebar .sidebar-logo-text-light {
+    display: none !important;
+}
+
+/* Adiciones del segundo CSS para el logo (priorizadas por el primero si hay conflicto) */
+.sidebar-logo-link {
+    display: flex; /* Asegura que sea un contenedor flex para centrar su contenido */
+    align-items: center;
+    justify-content: center; /* Centra el contenido del enlace del logo */
+    text-decoration: none;
+    width: 100%; /* Asegura que el enlace del logo ocupe todo el ancho disponible del sidebar-header */
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding: 15px;
+}
+.sidebar-logo-text-strong {
+    font-size: 1.22rem;
+    font-weight: 700;
+    color: #f4f7fa;
+    letter-spacing: -1px;
+}
+.sidebar-logo-text-light {
+    font-size: 1.22rem;
+    font-weight: 700;
+    color: #00abdf;
+    margin-left: 4px;
+    letter-spacing: -1px;
+}
+.sidebar-logo-img.logo-full {
+    display: inline;
+}
+.logo-colapsed {
+    display: none;
+}
+body.sidebar-collapsed .sidebar-logo-img.logo-full {
+    display: none !important;
+}
+body.sidebar-collapsed .logo-colapsed {
+    display: inline-block !important;
+}
+
+/* ====================================== */
+/* USUARIO */
+/* ====================================== */
+.sidebar-user {
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    text-align: center;
+}
+.sidebar-user-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    transition: width 0.3s, height 0.3s;
+}
+.sidebar-user-name {
+    margin-top: 8px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    transition: opacity 0.2s;
+}
+body.sidebar-collapsed #sidebar .sidebar-user-img {
+    width: 40px;
+    height: 40px;
+}
+body.sidebar-collapsed #sidebar .sidebar-user-name {
+    display: none !important;
+}
+
+/* ====================================== */
+/* MENÚ LATERAL ITEMS */
+/* ====================================== */
+.sidebar-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.sidebar-menu .nav-item {
+    position: relative;
+    margin-bottom: 15px;
+    padding: 0 6px;
+}
+.sidebar-menu .nav-link {
+    background-color: rgba(255,255,255,0.05);
+    border-radius: 14px;
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px; /* Espacio entre el icono y el texto */
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: background-color 0.25s ease, transform 0.2s ease;
+}
+.sidebar-menu .nav-link:hover {
+    background-color: rgba(255,255,255,0.08);
+    transform: translateY(-1px);
+    color: #ffffff;
+}
+.sidebar-menu .nav-item.active > .nav-link {
+    background-color: #318fb1;
+    color: #ffffff !important;
+    font-weight: 600;
+    border-radius: 14px;
+    box-shadow:
+        0 1px 2px rgba(255,255,255,0.15) inset,
+        0 4px 10px rgba(0,0,0,0.15);
+    transform: none;
+}
+.sidebar-menu .nav-link i {
+    font-size: 1.2rem;
+    color: inherit;
+    transition: transform 0.2s ease;
+}
+.sidebar-menu .nav-link:hover i {
+    transform: scale(1.1);
+}
+.sidebar-menu .nav-item.level-1 > a .label-text {
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: bold;
+    color: #ffffff;
+    letter-spacing: 0.05em;
+}
+.submenu {
+    display: none;
+    list-style: none;
+    padding-left: 15px;
+    margin-bottom: 0;
+    overflow: hidden;
+}
+.nav-item.expanded > .submenu {
+    display: block;
+}
+.submenu a {
+    font-size: 13px;
+    padding: 8px 20px 8px 35px;
+    display: flex;
+    align-items: center;
+    color: #ECF0F1;
+    gap: 10px;
+}
+.submenu a:hover {
+    color: #fff;
+}
+
+/* Reglas adicionales para menú colapsado del segundo CSS */
+body.sidebar-collapsed #sidebar .sidebar-menu .nav-link .label-text {
+    display: none !important;
+}
+body.sidebar-collapsed #sidebar .nav-link {
+    justify-content: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    text-align: center;
+}
+body.sidebar-collapsed #sidebar .sidebar-menu .nav-link i {
+    margin-right: 0 !important;
+    font-size: 1.6em !important;
+}
+body.sidebar-collapsed #sidebar .submenu {
+    display: none !important;
+}
+
+/* CAMBIO: Alineación de flechas de menú a la derecha (Icono y Texto a la izquierda, Flecha a la derecha) */
+/* Esta regla asegura que dentro de un nav-link que tiene un submenu,
+   el elemento con la clase 'expand-icon' se empuje a la derecha. */
+.sidebar-menu .nav-item:has(.submenu) > .nav-link .expand-icon {
+    margin-left: auto; /* Empuja este elemento lo más a la derecha posible */
+    margin-right: 0; /* Asegura que no haya margen derecho adicional */
+    display: block; /* Asegura que 'margin-left: auto' funcione correctamente */
+}
+
+/* ====================================== */
+/* FOOTER SIDEBAR */
+/* ====================================== */
+.sidebar-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    background: #2A3F54;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.sidebar-footer a {
+    color: #BDC3C7;
+    font-size: 18px;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+.sidebar-footer a:hover {
+    color: #fff;
+}
+
+/* ====================================== */
+/* TOGGLE BUTTON */
+/* ====================================== */
+.btn-hamburger, .btn-toggle {
+    background: none;
+    border: none;
+    color: #223142;
+    font-size: 20px;
+    cursor: pointer;
+    transition: transform 0.3s;
+    margin-right: 10px;
+}
+.btn-hamburger:hover, .btn-toggle:hover {
+    transform: scale(1.1);
+    color: #bb4d1e;
+}
+
+/* ====================================== */
+/* ZONA DERECHA (TOP NAV + MAIN CONTENT + FOOTER) */
+/* ====================================== */
+.right_col_wrapper {
+    margin-left: 280px;
+    width: calc(100% - 280px);
+    position: relative;
+    transition: margin-left 0.3s;
+}
+#sidebar.collapsed ~ .right_col_wrapper {
+    margin-left: 70px;
+    width: calc(100% - 70px);
+}
+
+/* ====================================== */
+/* TOP NAV */
+/* ====================================== */
+.top_nav {
+    position: fixed;
+    top: 0;
+    left: 280px;
+    right: 0;
+    height: 48px;
+    background: #EDEDED;
+    border-bottom: 1px solid #D7D7D7;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    transition: left 0.3s;
+}
+#sidebar.collapsed ~ .right_col_wrapper .top_nav {
+    left: 70px;
+}
+.top_nav .nav_menu {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end; /* <<--- CAMBIO: alinear todo a la derecha */
+    align-items: center;
+}
+
+.top_nav .nav_menu nav {
+    display: flex;
+    justify-content: flex-end; /* <<--- CAMBIO adicional por si se usa nav interno */
+    align-items: center;
+}
+
+.top_nav .nav_menu .nav.toggle a {
+    font-size: 20px;
+    margin-right: 20px;
+    color: #5A738E;
+}
+
+.top_nav .nav_menu .navbar-nav {
+    display: flex;
+    align-items: center;
+}
+.top_nav .nav_menu .navbar-nav .dropdown-menu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: #fff;
+    min-width: 150px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    border: none;
+    padding: 10px 0;
+    z-index: 9999;
+}
+.top_nav .nav_menu .navbar-nav .dropdown-menu a.dropdown-item:hover {
+    background: #f5f5f5;
+}
+
+/* ====================================== */
+/* FIX: botones con flechas extrañas y desalineación */
+/* ====================================== */
+a.asc:after,
+a.desc:after {
+    content: none !important;
+}
+
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    margin: 2px;
+    border-radius: 4px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    vertical-align: middle;
+    border: none;
+    padding: 6px;
+}
+
+.grid-view td .btn-action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.grid-view td {
+  text-align: center;
+}
+
+
+
+/* ====================================== */
+/* ESTILO GENERAL DE BOTONES DE ACCIÓN   */
+/* ====================================== */
+td a.btn-action {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 30px !important;
+  height: 30px !important;
+  margin: 2px 4px !important;
+  padding: 0 !important;
+  border-radius: 6px !important;
+  background-color: inherit !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15) !important;
+  transition: all 0.2s ease-in-out !important;
+  vertical-align: middle !important;
+  text-align: center !important;
+}
+
+td a.btn-action i {
+  font-size: 1.25em !important;
+  margin: 0 !important;
+  color: white !important;
+  display: inline-block !important;
+  text-align: center !important;
+  line-height: 1 !important;
+}
+
+/* ====================================== */
+/* COLORES CRUD PARA TODO EL SISTEMA     */
+/* ====================================== */
+td a.btn-view { background-color: #3498db !important; }
+td a.btn-view:hover { background-color: #2980b9 !important; }
+
+td a.btn-publish { background-color: #27ae60 !important; }
+td a.btn-publish:hover { background-color: #1e8449 !important; }
+
+td a.btn-update { background-color: #26b99a !important; }
+td a.btn-update:hover { background-color: #1e907c !important; }
+
+td a.btn-delete { background-color: #e74c3c !important; }
+td a.btn-delete:hover { background-color: #c0392b !important; }
+
+td a.btn-manage-galeria { background-color: #7f8c8d !important; }
+td a.btn-manage-galeria:hover { background-color: #707b7c !important; }
+
+td a.btn-manage-galeria-empty { background-color: #bdc3c7 !important; }
+td a.btn-manage-galeria-empty:hover { background-color: #95a5a6 !important; }
+
+td a.btn-manage-galeria-exists { background-color: #9b59b6 !important; }
+td a.btn-manage-galeria-exists:hover { background-color: #8e44ad !important; }
+
+td a.btn-copy { background-color: #f1c40f !important; color: #000 !important; }
+td a.btn-copy:hover { background-color: #d4ac0d !important; }
+
+td a.btn-search,
+td a.btn-preview {
+  background-color: #6c757d !important;
+}
+
+td a.btn-set-password {
+  background-color: #ffc107 !important;
+  color: #000 !important;
+}
+
+
+
+
+/* ====================================== */
+/* MAIN CONTENT SCROLLABLE */
+/* ====================================== */
+#main-content {
+    position: absolute;
+    top: 20px;
+    bottom: 40px;
+    padding: 50px;
+    background-color: #f7f7f7;
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+#sidebar.collapsed ~ .right_col_wrapper #main-content {
+    width: 100%;
+}
+
+
+
+/* ======================================== */
+/* ESTILO VISUAL UNIFICADO PARA BOTONES YII */
+/* ======================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-weight: 500;
+  text-transform: none;
+  padding: 8px 14px;
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.btn i {
+  margin-right: 6px;
+  font-size: 1rem;
+}
+
+/* Hover genérico */
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+/* ===================== */
+/* COLORES Y COMPORTAMIENTOS */
+/* ===================== */
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: #fff;
+}
+.btn-primary:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+
+.btn-success {
+  background-color: #198754;
+  border-color: #198754;
+  color: #fff;
+}
+.btn-success:hover {
+  background-color: #157347;
+  border-color: #146c43;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+}
+.btn-danger:hover {
+  background-color: #bb2d3b;
+  border-color: #b02a37;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #000;
+}
+.btn-warning:hover {
+  background-color: #e0a800;
+  border-color: #d39e00;
+}
+
+.btn-info {
+  background-color: #0dcaf0;
+  border-color: #0dcaf0;
+  color: #000;
+}
+.btn-info:hover {
+  background-color: #31d2f2;
+  border-color: #25cff2;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: #fff;
+}
+.btn-secondary:hover {
+  background-color: #5c636a;
+  border-color: #565e64;
+}
+
+
+
+
+
+
+/* ====================================== */
+/* FOOTER FIJO ABAJO */
+/* ====================================== */
+#footer {
+    position: fixed;
+    bottom: 0;
+    left: 280px;
+    right: 0;
+    height: 40px;
+    border-top: 1px solid #D7D7D7;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 0 20px;
+    transition: left 0.3s;
+}
+#sidebar.collapsed ~ .right_col_wrapper #footer {
+    left: 70px;
+}
+
+#footer .container {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+/* ====================================== */
+/* WIDGETS Y CONTENEDORES */
+/* ====================================== */
+.widget,
+.content-wrapper {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+.breadcrumbs-container {
+    background: #fff;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.content-wrapper, .widget {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+/* ====================================== */
+/* ACCORDION & LIST ITEMS */
+/* ====================================== */
+.accordion-button {
+    background-color: #f8f9fa;
+    color: #333;
+    font-weight: bold;
+    border: 1px solid #ddd;
+}
+.accordion-button:not(.collapsed) {
+    background-color: #e9ecef;
+}
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 10px 15px;
+    background-color: #fff;
+}
+.list-group-item:hover {
+    background-color: #f5f5f5;
+}
+
+/* ====================================== */
+/* TEXTAREA TINYMCE */
+/* ====================================== */
+textarea.tinymce {
+    min-height: 600px !important;
+    height: 600px !important;
+    resize: vertical;
+}
+
+/* ====================================== */
+/* STYLE AJUSTES RESPONSIVE */
+/* ====================================== */
+@media (max-width: 768px) {
+    .top_nav {
+        left: 0 !important;
+    }
+    #sidebar,
+    #sidebar.collapsed {
+        position: static;
+        width: 100%;
+        height: auto;
+    }
+    .right_col_wrapper {
+        margin-left: 0;
+        width: 100%;
+    }
+    #footer {
+        left: 0 !important;
+        width: 100%;
+    }
+    #main-content {
+        position: static;
+        margin-top: 50px;
+        margin-bottom: 40px;
+        height: auto;
+        overflow: visible;
+    }
+}
+
+/* ====================================== */
+/* BOTONES GRIDVIEW (Ejemplo original) */
+/* ====================================== */
+.btn-action:hover {
+    opacity: 0.9;
+    text-decoration: none;
+    color: #fff !important;
+}
+.btn-action i {
+    color: #fff !important;
+}
+
+/* Colores de botones (priorizando el primer CSS) */
+.btn-view { background-color: #3498db; }
+.btn-view:hover { background-color: #2980b9; }
+
+.btn-update { background-color: #26b99a; }
+.btn-update:hover { background-color: #1e907c; }
+
+.btn-delete { background-color: #e74c3c; }
+.btn-delete:hover { background-color: #c0392b; }
+
+.btn-manage-galeria { background-color: #7f8c8d; }
+.btn-manage-galeria:hover { background-color: #707b7c; }
+
+.btn-manage-galeria-empty { background-color: #95a5a6; }
+.btn-manage-galeria-empty:hover { background-color: #7f8c8d; }
+
+.btn-manage-galeria-exists { background-color: #9b59b6; }
+.btn-manage-galeria-exists:hover { background-color: #8e44ad; }
+
+.btn-copy { background-color: #f1c40f; }
+.btn-copy:hover { background-color: #d4ac0d; }
+.btn-copy { color: #000; }
+
+.btn-publish { background-color: #2563eb; color: white; }
+.btn-publish:hover { background-color: #1d4ed8; color: white; }
+
+.btn-unpublish { background-color: #9ca3af; color: white; }
+.btn-unpublish:hover { background-color: #6b7280; color: white; }
+
+/* Botones específicos del segundo CSS, si no están definidos arriba */
+.btn-search,
+.btn-preview {
+    background-color: #6c757d;
+}
+.btn-set-password {
+    background-color: #ffc107;
+    color: #000;
+}
+
+/* ====================================== */
+/* LEGAICY site.css AÑADIDOS */
+/* ====================================== */
+main > .container {
+    width: 1500px;
+    padding: 20px;
+}
+
+.footer {
+    background-color: #f5f9f5;
+    font-size: .9em;
+    height: 60px;
+}
+
+.footer > .container {
+    padding: 0 15px;
+}
+
+.not-set {
+    color: #c55;
+    font-style: italic;
+}
+
+/* Sorting icons para gridview */
+a.asc:after, a.desc:after {
+    content: '';
+    left: 3px;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border: solid 5px transparent;
+    margin: 4px 4px 2px 4px;
+    background: transparent;
+}
+a.asc:after {
+    border-bottom: solid 7px #212529;
+    border-top-width: 0;
+}
+a.desc:after {
+    border-top: solid 7px #212529;
+    border-bottom-width: 0;
+}
+.grid-view th {
+    white-space: nowrap;
+}
+.grid-view th .actions {
+    width: 250px;
+}
+.hint-block {
+    display: block;
+    margin-top: 5px;
+    color: #999;
+}
+.error-summary {
+    color: #a94442;
+    background: #fdf7f7;
+    border-left: 3px solid #eed3d7;
+    padding: 10px 20px;
+    margin: 0 0 15px 0;
+}
+
+/* Logout button navbar */
+.nav li > form > button.logout {
+    color: rgba(255,255,255,0.5);
+    padding: 8px;
+    font-size: 16px;
+}
+@media (max-width:767px) {
+    .nav li > form > button.logout {
+        display: block;
+        text-align: left;
+        width: 100%;
+        padding: 10px 0;
+    }
+}
+.nav > li > form > button.logout:focus,
+.nav > li > form > button.logout:hover {
+    text-decoration: none;
+    color: rgba(255,255,255,0.75);
+    padding: 8px;
+    font-size: 16px;
+}
+.nav > li > form > button.logout:focus { outline: none; }
+
+.btn_save { padding-bottom: 10px; }
+
+a { color: #000; }
+
+.dropdown-item.active, .dropdown-item:active {
+    color: var(--bs-dropdown-link-active-color);
+    text-decoration: none;
+    background-color: #198754;
+}
+
+
+
+/* ====================================== */
+/* AJUSTES SOLO PARA EL TOP NAVBAR        */
+/* ====================================== */
+
+/* 1) Contenedor principal: fondo, altura y sombra */
+.top_nav {
+    background-color: #EDEDED;           /* Fondo */
+    border-bottom: 1px solid #D7D7D7;    /* Línea inferior */
+    height: 48px;                        /* Altura fija */
+    display: flex;
+    align-items: center;                 /* Centra verticalmente */
+    padding: 0 20px;                     /* Espaciado horizontal */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* 2) Botón de toggle (hamburguesa) */
+.top_nav .nav.toggle a {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #1bc3d4;   /* Calipso Cápsula */
+    color: #fff;                 /* Icono blanco */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    transition: background 0.2s, transform 0.1s;
+    border: none;
+    cursor: pointer;
+}
+.top_nav .nav.toggle a:hover {
+    background-color: #17a2c0;
+    transform: scale(1.05);
+}
+
+/* 3) Reloj a la izquierda */
+.top-nav-clock-container {
+    display: flex;
+    align-items: center;
+    margin-right: auto;      /* Empuja todo lo demás a la derecha */
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1.1em;
+    background: #223142;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
+/* 4) Formulario de búsqueda y botones */
+.cms-search-form {
+    background: #f8f9fa;
+    border-radius: 40px;
+    padding: 0 6px 0 12px;
+    height: 38px;
+    border: 1px solid #e5e7eb;
+    margin-left: 20px;
+}
+.cms-search-input {
+    border: none;
+    background: transparent;
+    outline: none;
+}
+.cms-search-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #223142;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 6px;
+    transition: background 0.18s;
+}
+.cms-search-btn:hover {
+    background: #bb4d1e;
+}

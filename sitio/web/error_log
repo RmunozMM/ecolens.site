@@ -1,0 +1,8 @@
+[21-Oct-2025 21:58:28 America/Santiago] PHP Warning:  require(/home3/rogelio3/ecolens.site/sitio/vendor/composer/../symfony/polyfill-intl-normalizer/bootstrap.php): Failed to open stream: No such file or directory in /home3/rogelio3/ecolens.site/sitio/vendor/composer/autoload_real.php on line 41
+[21-Oct-2025 21:58:28 America/Santiago] PHP Fatal error:  Uncaught Error: Failed opening required '/home3/rogelio3/ecolens.site/sitio/vendor/composer/../symfony/polyfill-intl-normalizer/bootstrap.php' (include_path='.:/opt/cpanel/ea-php83/root/usr/share/pear') in /home3/rogelio3/ecolens.site/sitio/vendor/composer/autoload_real.php:41
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/sitio/vendor/composer/autoload_real.php(45): {closure}('e69f7f6ee287b96...', '/home3/rogelio3...')
+#1 /home3/rogelio3/ecolens.site/sitio/vendor/autoload.php(25): ComposerAutoloaderInit7c40cd2aebd1527a29a2d54151ca5734::getLoader()
+#2 /home3/rogelio3/ecolens.site/sitio/web/index.php(6): require('/home3/rogelio3...')
+#3 {main}
+  thrown in /home3/rogelio3/ecolens.site/sitio/vendor/composer/autoload_real.php on line 41

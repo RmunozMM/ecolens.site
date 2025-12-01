@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Monitoreo y Estadísticas | EcoLens</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&family=Lora:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+    <style>
+      /* Estilos en línea para simular gráficos */
+      .chart-placeholder {
+        height: 300px;
+        background-color: #e3f2fd; /* Azul suave para simular gráficos */
+        border: 1px solid #bbdefb;
+        border-radius: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2rem;
+        color: var(--secondary-color);
+        font-weight: 700;
+        text-align: center;
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header id="main-header"></header>
+
+    <main>
+      <section class="monitoreo-section container">
+        <h1>Dashboard de Monitoreo y Telemetría</h1>
+        <p class="subtitle">
+          Métricas en tiempo real del desempeño del sistema EcoLens.
+        </p>
+
+        <div class="stats-grid">
+          <div class="stat-item">
+            <h3>2,580</h3>
+            <p>Detecciones totales</p>
+          </div>
+          <div class="stat-item">
+            <h3>95.2%</h3>
+            <p>Precisión promedio (F1-macro)</p>
+          </div>
+          <div class="stat-item">
+            <h3>320 ms</h3>
+            <p>Latencia promedio (API)</p>
+          </div>
+          <div class="stat-item">
+            <h3>TRL 4</h3>
+            <p>Madurez Tecnológica</p>
+          </div>
+        </div>
+
+        <div class="chart-container-grid">
+          <div class="chart-item">
+            <h2>Latencia de Detección (Últimas 24h)</h2>
+            <div class="chart-placeholder">
+              Gráfico de Líneas: Latencia vs. Hora
+            </div>
+          </div>
+          <div class="chart-item">
+            <h2>Top 5 Especies Detectadas</h2>
+            <div class="chart-placeholder">
+              Gráfico de Barras: Distribución de Especies
+            </div>
+          </div>
+          <div class="chart-item full-width">
+            <h2>Distribución Geográfica de Detecciones</h2>
+            <div class="chart-placeholder">
+              Mapa: Puntos de Detección con Clustering (Simulación)
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="main-footer"></footer>
+
+    <script src="assets/js/script.js"></script>
+    <script>
+      // Aplicar lógica de protección al cargar la página
+      const isLoggedIn = localStorage.getItem("ecoLensLoggedIn") === "true";
+      if (!isLoggedIn) {
+        window.location.href = "login.html";
+      }
+    </script>
+  </body>
+</html>

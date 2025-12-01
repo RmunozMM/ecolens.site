@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+torch
+torchvision
+pillow
+numpy
+timm==0.9.16

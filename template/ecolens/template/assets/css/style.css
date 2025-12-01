@@ -1,0 +1,1200 @@
+:root {
+  /* ================================== */
+  /* PALETA DE COLORES (Final: Verde de Conservación) */
+  /* ================================== */
+  --primary-color: #45ad82; /* Verde Brillante (Acentos, Botones) */
+  --secondary-color: #1f3b3a; /* Azul Oscuro (Títulos, Footer, Contraste) */
+  --accent-light: #388e6a; /* Tono más oscuro para hover de botones */
+  --text-color: #333;
+  --light-bg: #f7f8f9; /* Fondo de tarjetas y secciones */
+  --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ================================== */
+/* 1. RESET Y TIPOGRAFÍA BASE */
+/* ================================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Nunito Sans", sans-serif;
+  color: var(--text-color);
+  line-height: 1.6;
+  background-color: #fff;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Lora", serif;
+  color: var(--secondary-color);
+}
+
+/* ================================== */
+/* 2. HEADER Y NAVEGACIÓN (RESPONSIVE) */
+/* ================================== */
+
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--secondary-color);
+  line-height: 1;
+}
+
+.logo img {
+  height: 80px; /* Tamaño final del logo */
+  margin-right: 10px;
+  display: block;
+}
+
+.main-nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.main-nav a {
+  text-decoration: none;
+  color: var(--secondary-color);
+  font-weight: 700;
+  transition: color 0.3s ease;
+}
+
+.main-nav a:hover,
+.main-nav a.active {
+  color: var(--primary-color);
+}
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 5px;
+  background: none;
+  border: none;
+}
+
+.nav-toggle .bar {
+  width: 25px;
+  height: 3px;
+  background-color: var(--secondary-color);
+  transition: all 0.3s ease;
+}
+
+/* Estado activo del menú de hamburguesa */
+.nav-toggle.is-active .bar:nth-child(2) {
+  opacity: 0;
+}
+.nav-toggle.is-active .bar:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+.nav-toggle.is-active .bar:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+/* ================================== */
+/* 3. GENERAL Y BOTONES */
+/* ================================== */
+
+.cta-button {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  background-color: var(--primary-color);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 700;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.cta-button:hover {
+  background-color: var(--accent-light);
+  transform: translateY(-2px);
+}
+
+.secondary-button {
+  background-color: var(--secondary-color);
+  color: #fff;
+  padding: 0.75rem 1.2rem;
+  font-size: 1rem;
+}
+
+.secondary-button:hover {
+  background-color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
+/* ================================== */
+/* 4. HOME PAGE (INDEX) Y NOSOTROS */
+/* ================================== */
+
+/* Hero Section */
+.hero-section {
+  background: url("../img/hero-bg.png") no-repeat center center/cover;
+  height: 60vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #fff;
+  position: relative;
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.hero-section .container {
+  z-index: 1;
+}
+
+.hero-section h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.hero-section p {
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+
+/* Features Section (3 tarjetas pequeñas) */
+.features-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 2rem;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.feature-card {
+  background-color: var(--light-bg);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+  flex: 1;
+  min-width: 250px;
+}
+
+.feature-card .icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+/* Stats Section y Destacados Técnicos (Calugas Adicionales) */
+.stats-section,
+.tech-highlight-section {
+  padding: 4rem 2rem;
+  text-align: center;
+  background-color: var(--light-bg);
+}
+
+.stats-section h2,
+.tech-highlight-section h2 {
+  margin-bottom: 2.5rem;
+  font-size: 2rem;
+}
+
+.stats-grid {
+  display: flex;
+  justify-content: space-around;
+  gap: 2rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+  flex: 1;
+  min-width: 200px;
+}
+
+.stat-item h3 {
+  font-size: 2rem;
+  color: var(--primary-color);
+}
+
+.highlight-cards-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 2rem;
+}
+
+.highlight-card {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  flex: 1;
+  min-width: 250px;
+  max-width: 350px;
+  text-align: center;
+  transition: transform 0.3s ease;
+  border-top: 4px solid var(--primary-color);
+}
+
+.highlight-card .icon {
+  color: var(--secondary-color);
+}
+
+/* Nosotros Page (Misión/Visión/Tesis Justificación) */
+.about-section {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.about-section p {
+  max-width: 800px;
+  margin: 1rem auto 2rem;
+}
+
+.about-grid {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.mission-vision {
+  background-color: var(--light-bg);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+  flex: 1;
+  min-width: 300px;
+  text-align: left;
+}
+
+.mission-vision h3 {
+  color: var(--primary-color);
+  text-align: center;
+}
+
+/* ================================== */
+/* 5. DETECTAR PAGE (Geoposición y Carga) */
+/* ================================== */
+
+.upload-section {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.upload-box {
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  padding: 2rem;
+  margin-top: 2rem;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.upload-box:hover {
+  border-color: var(--primary-color);
+}
+
+.upload-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+/* Geoposición Box */
+.location-box {
+  text-align: left;
+  max-width: 600px;
+  margin: 2rem auto 1.5rem;
+  padding: 1.5rem;
+  background-color: var(--light-bg);
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+}
+
+.location-group {
+  margin-bottom: 15px;
+}
+
+.location-box label {
+  font-weight: bold;
+  color: var(--secondary-color);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+#geocoords,
+#location-friendly {
+  flex-grow: 1;
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: "Nunito Sans", sans-serif;
+  background-color: #fff;
+  cursor: default;
+  box-sizing: border-box;
+}
+
+#location-friendly {
+  font-weight: 700;
+  color: var(--primary-color);
+  background-color: #e8f5e9;
+}
+
+.location-controls {
+  display: flex;
+  gap: 10px;
+}
+
+/* ================================== */
+/* 6. RESULTADOS, GALERÍA Y FICHAS */
+/* ================================== */
+
+/* Estructura general de Cards */
+.result-section,
+.species-page,
+.gallery-section,
+.contact-section {
+  padding: 4rem 2rem;
+}
+
+.result-card,
+.species-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  background-color: var(--light-bg);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  max-width: 1000px;
+  margin: 2rem auto;
+}
+
+.result-image,
+.species-image {
+  flex: 1 1 300px;
+}
+
+.result-image img,
+.species-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.result-details,
+.species-details {
+  flex: 2 1 400px;
+  padding: 0;
+}
+
+/* Bloque de resultados de ML (Router/Expert) */
+.result-block {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.result-block h3 {
+  margin: 5px 0 10px;
+  color: var(--primary-color);
+  font-size: 1.5rem;
+}
+
+.confidence-bar {
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+
+.bar-fill {
+  height: 15px;
+  background-color: var(--secondary-color);
+}
+
+/* Estilo para la barra del Modelo Experto */
+.bar-fill[style*="background-color: #4CAF50"] {
+  background-color: var(--primary-color) !important;
+}
+
+/* Galería de Detecciones */
+.gallery-section {
+  text-align: center;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.gallery-card {
+  background-color: #fff; /* Usamos blanco para que resalte sobre el fondo light-bg */
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  text-align: left;
+  transition: transform 0.3s ease;
+}
+
+.gallery-card:hover {
+  transform: translateY(-5px);
+}
+
+.gallery-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-details {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-details h3 {
+  margin: 0;
+}
+
+/* Contacto Page */
+.contact-form {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: var(--light-bg);
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+}
+
+.contact-form .form-group {
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.contact-form .form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: var(--secondary-color);
+}
+
+.contact-form .form-group input,
+.contact-form .form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: "Nunito Sans", sans-serif;
+}
+
+.contact-form .cta-button {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* ================================== */
+/* 7. PIE DE PÁGINA Y MEDIA QUERIES */
+/* ================================== */
+
+.main-footer {
+  background-color: var(--secondary-color);
+  color: #fff;
+  padding: 2rem;
+  text-align: center;
+}
+
+.footer-social .social-icon {
+  color: #fff;
+  font-size: 1.5rem;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+
+  .logo img {
+    height: 60px;
+  }
+
+  .main-nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: none;
+    flex-direction: column;
+    padding: 1rem 0;
+    gap: 0;
+  }
+
+  .main-nav.is-active {
+    display: flex;
+  }
+
+  .main-nav ul {
+    flex-direction: column;
+    text-align: center;
+    width: 100%;
+  }
+
+  .nav-toggle {
+    display: flex;
+  }
+
+  .result-card,
+  .species-card,
+  .about-grid,
+  .highlight-cards-grid,
+  .stats-grid,
+  .features-section {
+    flex-direction: column;
+    padding: 15px;
+  }
+}
+
+/* ===== FOOTER ===== */
+.footer-content {
+  background-color: #173b35;
+  color: #ffffff;
+  text-align: center;
+  font-family: "Nunito Sans", sans-serif;
+  padding: 2.5rem 1rem 1.5rem 1rem;
+}
+
+/* Estructura horizontal superior */
+.footer-top-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 6rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.8rem;
+}
+
+.footer-column {
+  text-align: center;
+  min-width: 200px;
+}
+
+.footer-column h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  color: #ffffff;
+  border-bottom: 2px solid #45ad82;
+  display: inline-block;
+  padding-bottom: 3px;
+}
+
+/* Enlaces */
+.footer-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.footer-link {
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  color: #45ad82;
+}
+
+.divider {
+  color: #ccc;
+}
+
+/* Redes sociales */
+.footer-social {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.social-icon {
+  text-decoration: none;
+  font-size: 1.6rem;
+  color: #ffffff;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.social-icon:hover {
+  color: #45ad82;
+  transform: scale(1.2);
+}
+
+/* Pie inferior */
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 0.8rem;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .footer-top-row {
+    flex-direction: column;
+    gap: 2rem;
+  }
+}
+
+/* ================================== */
+/* 8. LOGIN Y REGISTRO PAGES */
+/* ================================== */
+
+.login-section {
+  padding: 6rem 2rem;
+  text-align: center;
+}
+
+.login-section h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.login-section p {
+  margin-bottom: 2rem;
+}
+
+/* Reutilizamos el estilo del formulario de contacto para login/registro */
+.contact-form {
+  max-width: 100%;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: var(--light-bg);
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+}
+
+.contact-form .form-group {
+  text-align: left;
+}
+
+.login-note,
+.register-note {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.register-note a {
+  color: var(--primary-color);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* ================================== */
+/* 9. PERFIL PAGE (Mi Perfil) */
+/* ================================== */
+
+.perfil-section {
+  padding: 4rem 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.perfil-section .subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 3rem;
+  display: block;
+  text-align: center;
+}
+
+.perfil-grid {
+  display: flex;
+  gap: 2rem;
+}
+
+.perfil-card {
+  flex: 1;
+  background-color: var(--light-bg);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+}
+
+.perfil-card h2 {
+  color: var(--secondary-color);
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.perfil-form input,
+.perfil-form textarea {
+  background-color: #fff;
+  /* Asegurar que se vean bien los campos readonly */
+}
+
+.perfil-actions {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+#delete-account-btn {
+  color: #e74c3c;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+#delete-account-btn:hover {
+  text-decoration: underline;
+}
+
+/* Responsive para Perfil */
+@media (max-width: 768px) {
+  .perfil-grid {
+    flex-direction: column;
+  }
+}
+
+/* ================================== */
+/* 9. PERFIL PAGE (Mi Perfil) */
+/* ================================== */
+
+/* Nuevo Header para la foto */
+.perfil-header-photo {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.profile-photo-container {
+  display: inline-block;
+  position: relative;
+}
+
+.profile-photo-container img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%; /* Hace la imagen circular */
+  object-fit: cover;
+  border: 4px solid var(--primary-color); /* Borde de tu color principal */
+  transition: transform 0.3s ease;
+}
+
+.profile-photo-container img:hover {
+  transform: scale(1.05);
+}
+
+.upload-photo-btn {
+  /* Estilo del botón debajo de la foto */
+  font-size: 0.8rem;
+  padding: 0.3rem 1rem;
+  margin-top: 10px;
+  background-color: var(--secondary-color);
+  color: #fff;
+}
+
+.upload-photo-btn:hover {
+  background-color: var(--primary-color);
+}
+
+.perfil-section {
+  padding: 4rem 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.perfil-section .subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 3rem;
+  display: block;
+  text-align: center;
+}
+
+.perfil-grid {
+  display: flex;
+  gap: 2rem;
+}
+
+.perfil-card {
+  flex: 1;
+  background-color: var(--light-bg);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+}
+/* ... el resto de estilos de perfil que ya tenías ... */
+
+/* ================================== */
+/* 10. MONITOREO PAGE (INTRANET) */
+/* ================================== */
+
+.monitoreo-section {
+  padding: 4rem 2rem;
+}
+
+.monitoreo-section h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.monitoreo-section .subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 3rem;
+  display: block;
+}
+
+.chart-container-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+  margin-top: 4rem;
+}
+
+.chart-item {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.chart-item h2 {
+  font-size: 1.5rem;
+  border-bottom: 2px solid var(--light-bg);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.chart-item.full-width {
+  grid-column: 1 / -1; /* Ocupa todo el ancho en la grilla */
+}
+
+/* Reutilizamos .stats-grid y .stat-item del index.html */
+
+@media (max-width: 768px) {
+  .chart-container-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ================================== */
+/* 9. PERFIL PAGE (Mi Perfil) */
+/* ================================== */
+
+.perfil-section {
+  padding: 4rem 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.perfil-section .subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 3rem;
+  display: block;
+  text-align: center;
+}
+
+.perfil-grid {
+  display: flex;
+  gap: 2rem;
+}
+
+.perfil-card {
+  flex: 1;
+  background-color: var(--light-bg);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+}
+
+.perfil-card h2 {
+  color: var(--secondary-color);
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.perfil-form .form-group {
+  text-align: left;
+}
+
+.perfil-form input,
+.perfil-form textarea {
+  background-color: #fff;
+}
+
+.perfil-actions {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+#delete-account-btn {
+  color: #e74c3c;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+#delete-account-btn:hover {
+  text-decoration: underline;
+}
+
+/* Responsive para Perfil */
+@media (max-width: 768px) {
+  .perfil-grid {
+    flex-direction: column;
+  }
+}
+
+/* Estilos para el enlace de registro */
+.register-note {
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  color: var(--text-color);
+}
+
+.register-note a {
+  color: var(--primary-color);
+  font-weight: bold;
+  text-decoration: none;
+  transition: text-decoration 0.3s ease;
+}
+
+.register-note a:hover {
+  text-decoration: underline;
+}
+
+/* Ajuste de margen para la nota de login original */
+.login-note {
+  margin-top: 0.5rem;
+}
+
+/* PERFIL DE USUARIO */
+.perfil-main {
+  margin-top: 60px;
+  margin-bottom: 60px;
+  text-align: center;
+}
+
+.perfil-title {
+  font-family: "Lora", serif;
+  font-size: 2rem;
+  color: #173b35;
+  margin-bottom: 10px;
+}
+
+.perfil-subtitle {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 40px;
+}
+
+.perfil-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.avatar-circle {
+  width: 120px;
+  height: 120px;
+  border: 3px solid #45ad82;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.avatar-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.perfil-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.perfil-card {
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  width: 340px;
+  text-align: left;
+}
+
+.perfil-card h2 {
+  font-family: "Lora", serif;
+  color: #173b35;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #45ad82;
+  display: inline-block;
+  padding-bottom: 4px;
+}
+
+.perfil-input,
+.perfil-textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: "Nunito Sans", sans-serif;
+}
+
+.cta-button {
+  background-color: #45ad82;
+  border: none;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 700;
+  font-family: "Nunito Sans", sans-serif;
+}
+
+.cta-button:hover {
+  background-color: #3a946f;
+}
+
+.save-button {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.change-pass {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.delete-button {
+  background: none;
+  color: #d14a4a;
+  border: none;
+  font-weight: bold;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  text-decoration: underline;
+}
+
+/* TERMINOS */
+/* ===== TÉRMINOS Y CONDICIONES ===== */
+.terms-title {
+  font-family: "Lora", serif;
+  color: #173b35;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.terms-intro {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #333;
+  margin-bottom: 2rem;
+  text-align: justify;
+}
+
+.terms-section h2 {
+  color: #173b35;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+  font-family: "Lora", serif;
+  font-size: 1.3rem;
+  border-bottom: 2px solid #45ad82;
+  display: inline-block;
+  padding-bottom: 3px;
+}
+
+.terms-section p {
+  font-family: "Nunito Sans", sans-serif;
+  color: #444;
+  margin-bottom: 1rem;
+  text-align: justify;
+}
+
+.terms-section a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.terms-section a:hover {
+  text-decoration: underline;
+}
+
+.terms-footer {
+  text-align: center;
+  margin-top: 3rem;
+}

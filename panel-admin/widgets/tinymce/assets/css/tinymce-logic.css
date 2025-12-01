@@ -1,0 +1,11 @@
+/* Ejemplos de overrides */
+.tox .tox-statusbar__branding {
+    display: none;
+  }
+  
+  /* añade tus estilos para el contenido editable */
+  body.mce-content-body {
+    font-family: Helvetica, Arial, sans-serif;
+    line-height: 1.4;
+  }
+  

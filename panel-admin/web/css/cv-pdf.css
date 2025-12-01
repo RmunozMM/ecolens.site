@@ -1,0 +1,87 @@
+/* Dentro de web/css/cv-pdf.css */
+body {
+    font-family: 'dejavusans', sans-serif;
+    font-size: 8pt; /* Bajamos a 8pt como base */
+    line-height: 1.1; /* Mantenemos interlineado apretado */
+    color: #000000;
+}
+p, ul, li {
+    margin: 0 0 0.8mm 0; /* Margen inferior mínimo */
+    padding: 0;
+    text-align: justify;
+}
+h1.cv-nombre {
+    font-size: 16pt; /* OK */
+    font-weight: bold;
+    text-align: center;
+    font-style: normal; /* Quizás quitar itálica del nombre? */
+    margin-bottom: 1mm;
+}
+p.cv-titulo, p.cv-subtitulo, p.cv-educacion {
+    font-size: 9pt; /* Un poco más grande que el cuerpo */
+    font-style: italic;
+    text-align: center;
+    line-height: 1.0;
+    margin: 0 0 1mm 0;
+}
+ p.cv-contacto, p.cv-redes {
+     font-size: 7.5pt; /* Contacto sí puede ser más pequeño */
+     text-align: center;
+     line-height: 1.0;
+     margin: 0 0 1mm 0;
+ }
+ p.cv-contacto a, p.cv-redes a { font-size: 7.5pt; }
+.header-resume {
+    margin-bottom: 4mm; /* Aún más reducido */
+}
+h2 { /* Títulos de sección */
+    font-size: 10pt; /* Más grande que H3 y cuerpo */
+    font-weight: bold;
+    margin-top: 2.5mm; /* Reducido */
+    margin-bottom: 1mm; /* Reducido */
+    border-bottom: 0.5pt solid #333;
+    page-break-after: avoid;
+}
+h3 { /* Subtítulos */
+    font-size: 8.5pt; /* Ligeramente más grande que cuerpo */
+    font-weight: bold;
+    margin-top: 1.5mm;
+    margin-bottom: 0.5mm;
+    page-break-after: avoid;
+}
+ p em { /* Fechas */
+    font-style: italic;
+    font-size: 7.5pt; /* Un poco más pequeño */
+    display: block;
+    margin-bottom: 0.8mm;
+ }
+ul {
+    list-style: disc outside;
+    margin: 0 0 1mm 5mm; /* Reducido margen inferior */
+    padding-left: 0;
+    text-align: left;
+}
+li {
+    margin-bottom: 0.1mm; /* Casi pegados */
+    text-align: left;
+    page-break-inside: avoid;
+}
+li strong { font-weight: bold; }
+hr {
+    border: none;
+    border-top: 0.5pt solid #cccccc;
+    margin: 1.5mm 0; /* Reducido */
+    height: 0.5pt;
+    page-break-after: avoid;
+}
+.update-section p {
+    text-align: right;
+    font-size: 7pt; /* Mantener pequeño */
+    margin-top: 4mm; /* Reducido */
+    font-style: italic;
+    color: #555555;
+}
+
+/* --- Ocultar botones --- */
+.btn-container { display: none !important; }
+/* ... otros estilos ... */

@@ -1,0 +1,83 @@
+ /* Estilos para Modo Alto Contraste */
+ .alto-contraste {
+    background-color: #000 !important;
+    color: #FFF !important;
+}
+
+.alto-contraste a {
+    color: #FFD700 !important; /* Amarillo para enlaces */
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.alto-contraste button, 
+.alto-contraste input, 
+.alto-contraste select, 
+.alto-contraste textarea {
+    background-color: #222 !important;
+    color: #FFF !important;
+    border: 2px solid #FFF !important;
+}
+
+.alto-contraste .sidebar, 
+.alto-contraste .sidebar-footer {
+    background-color: #111 !important;
+    border-top: 2px solid #FFF;
+}
+
+.alto-contraste .top_nav, 
+.alto-contraste .footer {
+    background-color: #111 !important;
+    color: #FFF !important;
+}
+
+.alto-contraste table {
+    border: 2px solid #FFF !important;
+}
+
+.alto-contraste table th, 
+.alto-contraste table td {
+    border: 1px solid #FFF !important;
+    background-color: #222 !important;
+}
+
+/* Ajuste para TinyMCE */
+.alto-contraste .tox-tinymce {
+    background-color: #222 !important;
+    color: #FFF !important;
+}
+
+.alto-contraste .tox-editor-container {
+    background-color: #222 !important;
+    color: #FFF !important;
+}
+
+.alto-contraste .tox-toolbar, 
+.alto-contraste .tox-toolbar__primary {
+    background-color: #111 !important;
+}
+
+.alto-contraste .tox .tox-toolbar__group button {
+    background-color: #333 !important;
+    color: #FFD700 !important; /* Amarillo */
+}
+
+
+/* MODO DISLEXIA*/
+@import url('https://fonts.googleapis.com/css2?family=OpenDyslexic&display=swap');
+
+.modo-dislexia {
+    font-family: 'OpenDyslexic', Arial, sans-serif !important;
+    letter-spacing: 0.05em !important; /* Aumenta el espaciado entre las letras */
+    word-spacing: 0.1em !important;    /* Aumenta el espaciado entre las palabras */
+    line-height: 1.5 !important;       /* Aumenta el espaciado entre las líneas */
+    text-align: justify;               /* Justifica el texto para que sea más uniforme */
+}
+
+.modo-dislexia h1, .modo-dislexia h2, .modo-dislexia h3, .modo-dislexia h4, .modo-dislexia h5, .modo-dislexia h6 {
+    letter-spacing: 0.1em !important; /* Aumenta el espaciado en los encabezados */
+}
+
+.modo-dislexia p {
+    text-align: left; /* Alineación a la izquierda para mayor legibilidad */
+}

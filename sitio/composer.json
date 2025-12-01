@@ -1,0 +1,33 @@
+{
+  "name": "miempresa/api-front-skeleton",
+  "description": "Front-end Yii2 consumiendo API-First con themes",
+  "require": {
+    "php": ">=5.6.0",
+    "yiisoft/yii2": "~2.0.14",
+    "yiisoft/yii2-bootstrap4": "~2.0.0",
+    "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
+    "yiisoft/yii2-httpclient": "~2.0.8",
+    "bower-asset/jquery": "^3.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "app\\\\controllers\\\\": "controllers/",
+      "app\\\\services\\\\":    "services/"
+    }
+  },
+  "config": {
+    "process-timeout": 1800,
+    "fxp-asset": {
+      "enabled": false
+    },
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true
+    }
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ]
+}

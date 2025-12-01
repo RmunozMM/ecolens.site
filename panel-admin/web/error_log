@@ -1,0 +1,347 @@
+[20-Oct-2025 22:23:27 America/Santiago] PHP Warning:  require(/home3/rogelio3/ecolens.site/panel-admin/vendor/composer/../symfony/polyfill-iconv/bootstrap.php): Failed to open stream: No such file or directory in /home3/rogelio3/ecolens.site/panel-admin/vendor/composer/autoload_real.php on line 41
+[20-Oct-2025 22:23:27 America/Santiago] PHP Fatal error:  Uncaught Error: Failed opening required '/home3/rogelio3/ecolens.site/panel-admin/vendor/composer/../symfony/polyfill-iconv/bootstrap.php' (include_path='.:/opt/cpanel/ea-php83/root/usr/share/pear') in /home3/rogelio3/ecolens.site/panel-admin/vendor/composer/autoload_real.php:41
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/vendor/composer/autoload_real.php(45): {closure}('def43f6c87e4f8d...', '/home3/rogelio3...')
+#1 /home3/rogelio3/ecolens.site/panel-admin/vendor/autoload.php(25): ComposerAutoloaderInit3917ef316dd71839d2e2683342f94e7b::getLoader()
+#2 /home3/rogelio3/ecolens.site/panel-admin/web/index.php(8): require('/home3/rogelio3...')
+#3 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/vendor/composer/autoload_real.php on line 41
+[20-Oct-2025 22:51:07 America/Santiago] PHP Warning:  require(/home3/rogelio3/ecolens.site/panel-admin/vendor/composer/../symfony/polyfill-iconv/bootstrap.php): Failed to open stream: No such file or directory in /home3/rogelio3/ecolens.site/panel-admin/vendor/composer/autoload_real.php on line 41
+[20-Oct-2025 22:51:07 America/Santiago] PHP Fatal error:  Uncaught Error: Failed opening required '/home3/rogelio3/ecolens.site/panel-admin/vendor/composer/../symfony/polyfill-iconv/bootstrap.php' (include_path='.:/opt/cpanel/ea-php83/root/usr/share/pear') in /home3/rogelio3/ecolens.site/panel-admin/vendor/composer/autoload_real.php:41
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/vendor/composer/autoload_real.php(45): {closure}('def43f6c87e4f8d...', '/home3/rogelio3...')
+#1 /home3/rogelio3/ecolens.site/panel-admin/vendor/autoload.php(25): ComposerAutoloaderInit3917ef316dd71839d2e2683342f94e7b::getLoader()
+#2 /home3/rogelio3/ecolens.site/panel-admin/web/index.php(8): require('/home3/rogelio3...')
+#3 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/vendor/composer/autoload_real.php on line 41
+[20-Oct-2025 22:56:38 America/Santiago] PHP Warning:  require(/home3/rogelio3/ecolens.site/panel-admin/vendor/composer/../symfony/polyfill-iconv/bootstrap.php): Failed to open stream: No such file or directory in /home3/rogelio3/ecolens.site/panel-admin/vendor/composer/autoload_real.php on line 41
+[20-Oct-2025 22:56:38 America/Santiago] PHP Fatal error:  Uncaught Error: Failed opening required '/home3/rogelio3/ecolens.site/panel-admin/vendor/composer/../symfony/polyfill-iconv/bootstrap.php' (include_path='.:/opt/cpanel/ea-php83/root/usr/share/pear') in /home3/rogelio3/ecolens.site/panel-admin/vendor/composer/autoload_real.php:41
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/vendor/composer/autoload_real.php(45): {closure}('def43f6c87e4f8d...', '/home3/rogelio3...')
+#1 /home3/rogelio3/ecolens.site/panel-admin/vendor/autoload.php(25): ComposerAutoloaderInit3917ef316dd71839d2e2683342f94e7b::getLoader()
+#2 /home3/rogelio3/ecolens.site/panel-admin/web/index.php(8): require('/home3/rogelio3...')
+#3 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/vendor/composer/autoload_real.php on line 41
+[20-Oct-2025 22:56:41 America/Santiago] PHP Warning:  require(/home3/rogelio3/ecolens.site/panel-admin/vendor/composer/../symfony/polyfill-iconv/bootstrap.php): Failed to open stream: No such file or directory in /home3/rogelio3/ecolens.site/panel-admin/vendor/composer/autoload_real.php on line 41
+[20-Oct-2025 22:56:41 America/Santiago] PHP Fatal error:  Uncaught Error: Failed opening required '/home3/rogelio3/ecolens.site/panel-admin/vendor/composer/../symfony/polyfill-iconv/bootstrap.php' (include_path='.:/opt/cpanel/ea-php83/root/usr/share/pear') in /home3/rogelio3/ecolens.site/panel-admin/vendor/composer/autoload_real.php:41
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/vendor/composer/autoload_real.php(45): {closure}('def43f6c87e4f8d...', '/home3/rogelio3...')
+#1 /home3/rogelio3/ecolens.site/panel-admin/vendor/autoload.php(25): ComposerAutoloaderInit3917ef316dd71839d2e2683342f94e7b::getLoader()
+#2 /home3/rogelio3/ecolens.site/panel-admin/web/index.php(8): require('/home3/rogelio3...')
+#3 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/vendor/composer/autoload_real.php on line 41
+[21-Oct-2025 07:30:46 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'rogelio3_ecolens'@'localhost' (using password: YES) in /home3/rogelio3/ecolens.site/panel-admin/config/params.php:30
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/config/params.php(30): mysqli_connect('localhost', 'rogelio3_ecolen...', Object(SensitiveParameterValue), 'rogelio3_ecolen...')
+#1 /home3/rogelio3/ecolens.site/panel-admin/config/params.php(81): obtenerConfiguraciones()
+#2 /home3/rogelio3/ecolens.site/panel-admin/config/web.php(3): require('/home3/rogelio3...')
+#3 /home3/rogelio3/ecolens.site/panel-admin/web/index.php(11): require('/home3/rogelio3...')
+#4 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/config/params.php on line 30
+[21-Oct-2025 07:32:08 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'rogelio3_ecolens'@'localhost' (using password: YES) in /home3/rogelio3/ecolens.site/panel-admin/config/params.php:30
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/config/params.php(30): mysqli_connect('localhost', 'rogelio3_ecolen...', Object(SensitiveParameterValue), 'rogelio3_ecolen...')
+#1 /home3/rogelio3/ecolens.site/panel-admin/config/params.php(81): obtenerConfiguraciones()
+#2 /home3/rogelio3/ecolens.site/panel-admin/config/web.php(3): require('/home3/rogelio3...')
+#3 /home3/rogelio3/ecolens.site/panel-admin/web/index.php(11): require('/home3/rogelio3...')
+#4 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/config/params.php on line 30
+[21-Oct-2025 07:32:13 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'rogelio3_ecolens'@'localhost' (using password: YES) in /home3/rogelio3/ecolens.site/panel-admin/config/params.php:30
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/config/params.php(30): mysqli_connect('localhost', 'rogelio3_ecolen...', Object(SensitiveParameterValue), 'rogelio3_ecolen...')
+#1 /home3/rogelio3/ecolens.site/panel-admin/config/params.php(81): obtenerConfiguraciones()
+#2 /home3/rogelio3/ecolens.site/panel-admin/config/web.php(3): require('/home3/rogelio3...')
+#3 /home3/rogelio3/ecolens.site/panel-admin/web/index.php(11): require('/home3/rogelio3...')
+#4 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/config/params.php on line 30
+[21-Oct-2025 07:32:16 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'rogelio3_ecolens'@'localhost' (using password: YES) in /home3/rogelio3/ecolens.site/panel-admin/config/params.php:30
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/config/params.php(30): mysqli_connect('localhost', 'rogelio3_ecolen...', Object(SensitiveParameterValue), 'rogelio3_ecolen...')
+#1 /home3/rogelio3/ecolens.site/panel-admin/config/params.php(81): obtenerConfiguraciones()
+#2 /home3/rogelio3/ecolens.site/panel-admin/config/web.php(3): require('/home3/rogelio3...')
+#3 /home3/rogelio3/ecolens.site/panel-admin/web/index.php(11): require('/home3/rogelio3...')
+#4 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/config/params.php on line 30
+[21-Oct-2025 07:34:05 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'rogelio3_ecolens'@'localhost' (using password: YES) in /home3/rogelio3/ecolens.site/panel-admin/config/params.php:30
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/config/params.php(30): mysqli_connect('localhost', 'rogelio3_ecolen...', Object(SensitiveParameterValue), 'rogelio3_ecolen...')
+#1 /home3/rogelio3/ecolens.site/panel-admin/config/params.php(81): obtenerConfiguraciones()
+#2 /home3/rogelio3/ecolens.site/panel-admin/config/web.php(3): require('/home3/rogelio3...')
+#3 /home3/rogelio3/ecolens.site/panel-admin/web/index.php(11): require('/home3/rogelio3...')
+#4 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/config/params.php on line 30
+[21-Oct-2025 07:34:37 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'rogelio3_ecolens'@'localhost' (using password: YES) in /home3/rogelio3/ecolens.site/panel-admin/config/params.php:30
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/config/params.php(30): mysqli_connect('localhost', 'rogelio3_ecolen...', Object(SensitiveParameterValue), 'rogelio3_ecolen...')
+#1 /home3/rogelio3/ecolens.site/panel-admin/config/params.php(81): obtenerConfiguraciones()
+#2 /home3/rogelio3/ecolens.site/panel-admin/config/web.php(3): require('/home3/rogelio3...')
+#3 /home3/rogelio3/ecolens.site/panel-admin/web/index.php(11): require('/home3/rogelio3...')
+#4 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/config/params.php on line 30
+[21-Oct-2025 08:45:23 America/Santiago] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'rogelio3_ecolens'@'localhost' (using password: YES) in /home3/rogelio3/ecolens.site/panel-admin/config/params.php:30
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/config/params.php(30): mysqli_connect('localhost', 'rogelio3_ecolen...', Object(SensitiveParameterValue), 'rogelio3_ecolen...')
+#1 /home3/rogelio3/ecolens.site/panel-admin/config/params.php(81): obtenerConfiguraciones()
+#2 /home3/rogelio3/ecolens.site/panel-admin/config/web.php(3): require('/home3/rogelio3...')
+#3 /home3/rogelio3/ecolens.site/panel-admin/web/index.php(11): require('/home3/rogelio3...')
+#4 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/config/params.php on line 30
+[21-Oct-2025 10:07:52 America/Santiago] PHP Fatal error:  Uncaught yii\base\InvalidConfigException: The "id" configuration for the Application is required. in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php:218
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php(200): yii\base\Application->preInit(Array)
+#1 /home3/rogelio3/ecolens.site/panel-admin/web/index.php(13): yii\base\Application->__construct(Array)
+#2 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php on line 218
+[21-Oct-2025 10:13:58 America/Santiago] PHP Fatal error:  Uncaught yii\base\InvalidConfigException: The "id" configuration for the Application is required. in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php:218
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php(200): yii\base\Application->preInit(Array)
+#1 /home3/rogelio3/ecolens.site/panel-admin/web/index.php(13): yii\base\Application->__construct(Array)
+#2 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php on line 218
+[21-Oct-2025 10:25:42 America/Santiago] PHP Fatal error:  Uncaught yii\base\InvalidConfigException: The "id" configuration for the Application is required. in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php:218
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php(200): yii\base\Application->preInit(Array)
+#1 /home3/rogelio3/ecolens.site/panel-admin/web/index.php(13): yii\base\Application->__construct(Array)
+#2 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php on line 218
+[21-Oct-2025 10:28:48 America/Santiago] PHP Fatal error:  Uncaught yii\base\InvalidConfigException: The "id" configuration for the Application is required. in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php:218
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php(200): yii\base\Application->preInit(Array)
+#1 /home3/rogelio3/ecolens.site/panel-admin/web/index.php(13): yii\base\Application->__construct(Array)
+#2 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php on line 218
+[21-Oct-2025 10:35:53 America/Santiago] PHP Fatal error:  Uncaught yii\base\InvalidConfigException: The "id" configuration for the Application is required. in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php:218
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php(200): yii\base\Application->preInit(Array)
+#1 /home3/rogelio3/ecolens.site/panel-admin/web/index.php(13): yii\base\Application->__construct(Array)
+#2 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php on line 218
+[21-Oct-2025 10:36:00 America/Santiago] PHP Fatal error:  Uncaught yii\base\InvalidConfigException: The "id" configuration for the Application is required. in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php:218
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php(200): yii\base\Application->preInit(Array)
+#1 /home3/rogelio3/ecolens.site/panel-admin/web/index.php(13): yii\base\Application->__construct(Array)
+#2 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php on line 218
+[21-Oct-2025 10:37:10 America/Santiago] PHP Fatal error:  Uncaught yii\base\InvalidConfigException: The "id" configuration for the Application is required. in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php:218
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php(200): yii\base\Application->preInit(Array)
+#1 /home3/rogelio3/ecolens.site/panel-admin/web/index.php(13): yii\base\Application->__construct(Array)
+#2 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php on line 218
+[21-Oct-2025 13:34:59 America/Santiago] PHP Warning:  http_response_code(): Cannot set response code - headers already sent (output started at /home3/rogelio3/ecolens.site/panel-admin/modules/api/controllers/ContenidoController.php:84) in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/ErrorHandler.php on line 144
+[21-Oct-2025 13:34:59 America/Santiago] An Error occurred while handling another error:
+yii\web\HeadersAlreadySentException: Headers already sent in /home3/rogelio3/ecolens.site/panel-admin/modules/api/controllers/ContenidoController.php on line 84. in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/web/Response.php:369
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/web/Response.php(342): yii\web\Response->sendHeaders()
+#1 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/web/ErrorHandler.php(136): yii\web\Response->send()
+#2 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/ErrorHandler.php(152): yii\web\ErrorHandler->renderException(Object(yii\web\HeadersAlreadySentException))
+#3 [internal function]: yii\base\ErrorHandler->handleException(Object(yii\web\HeadersAlreadySentException))
+#4 {main}
+Previous exception:
+yii\web\HeadersAlreadySentException: Headers already sent in /home3/rogelio3/ecolens.site/panel-admin/modules/api/controllers/ContenidoController.php on line 84. in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/web/Response.php:369
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/web/Response.php(342): yii\web\Response->sendHeaders()
+#1 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php(659): yii\web\Response->send()
+#2 /home3/rogelio3/ecolens.site/panel-admin/modules/api/controllers/ContenidoController.php(138): yii\base\Application->end()
+#3 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Controller.php(176): app\modules\api\controllers\ContenidoController->beforeAction(Object(yii\base\InlineAction))
+#4 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Module.php(552): yii\base\Controller->runAction('', Array)
+#5 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('api/contenido', Array)
+#6 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php(384): yii\web\Application->handleRequest(Object(yii\web\Request))
+#7 /home3/rogelio3/ecolens.site/panel-admin/web/index-api.php(14): yii\base\Application->run()
+#8 {main}
+$_SERVER = [
+    'LSPHP_ENABLE_USER_INI' => 'on',
+    'PATH' => '/usr/local/bin:/usr/bin:/bin',
+    'TEMP' => '/tmp',
+    'TMP' => '/tmp',
+    'TMPDIR' => '/tmp',
+    'PWD' => '/',
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate, br, zstd',
+    'HTTP_ACCEPT_LANGUAGE' => 'es-419,es;q=0.9,es-ES;q=0.8,en;q=0.7,en-GB;q=0.6,en-US;q=0.5,es-CL;q=0.4,es-MX;q=0.3',
+    'CONTENT_LENGTH' => '0',
+    'HTTP_COOKIE' => '_tccl_visitor=5b92333f-9959-480b-9da1-7eb2cd98f70a; x-visitor-id=46919683-c880-4bc3-b398-1a9e8da7f4a3; cookie_warning_dismissed=true; cookie_terms_accepted=true; PHPSESSID=eaa1a822175c1d88e33d5cdbf36d324d; _identity=51cfcd4614f8697df989e9d5a6bbc7ac068ff4787f40ec3b248c19e05173fd1ca%3A2%3A%7Bi%3A0%3Bs%3A9%3A%22_identity%22%3Bi%3A1%3Bs%3A214%3A%22%5B1%2C%228f23d8ca137ee3474f6363fb6f5fbcb9a5bd41e6d0ab3502ebd44b2b7934c9ee1375e176f67ce09ef8c0b41498c4f9b119cb67f9d1ed519b07f374058807b83b98a58e6def69e87ab19b5d57478f4912211f48c1a2c78531b541873fb4dbfe9baaec2f05%22%2C2592000%5D%22%3B%7D; _csrf=7e2c390ad12477627c751ee77a4c9ae3c07ba9a5f0d43554b76afa45ce7fcbe6a%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%22ZGwiMtDVUY22bEm1AOW9IChq8xM8KHZk%22%3B%7D',
+    'HTTP_HOST' => 'ecolens.site',
+    'HTTP_REFERER' => 'https://ecolens.site/panel-admin/web/api-explorer/index',
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0',
+    'HTTP_SEC_CH_UA_PLATFORM' => '"macOS"',
+    'HTTP_SEC_CH_UA' => '"Microsoft Edge";v="141", "Not?A_Brand";v="8", "Chromium";v="141"',
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1',
+    'HTTP_SEC_CH_UA_MOBILE' => '?0',
+    'HTTP_SEC_FETCH_SITE' => 'same-origin',
+    'HTTP_SEC_FETCH_MODE' => 'navigate',
+    'HTTP_SEC_FETCH_DEST' => 'empty',
+    'HTTP_PRIORITY' => 'u=0, i',
+    'HTTP_X_HTTPS' => '1',
+    'REDIRECT_UNIQUE_ID' => 'aPe2M5h3cen4ydPWrKTPCgAANBU',
+    'REDIRECT_QS_ConnectionId' => '17610644990597373347877',
+    'REDIRECT_SCRIPT_URL' => '/panel-admin/web/api/contenido',
+    'REDIRECT_SCRIPT_URI' => 'https://ecolens.site/panel-admin/web/api/contenido',
+    'REDIRECT_HTTPS' => 'on',
+    'REDIRECT_SSL_TLS_SNI' => 'ecolens.site',
+    'REDIRECT_HTTP2' => 'on',
+    'REDIRECT_H2PUSH' => 'off',
+    'REDIRECT_H2_PUSH' => 'off',
+    'REDIRECT_H2_PUSHED' => '',
+    'REDIRECT_H2_PUSHED_ON' => '',
+    'REDIRECT_H2_STREAM_ID' => '3',
+    'REDIRECT_H2_STREAM_TAG' => '47877-525-3',
+    'REDIRECT_STATUS' => '200',
+    'UNIQUE_ID' => 'aPe2M5h3cen4ydPWrKTPCgAANBU',
+    'QS_ConnectionId' => '17610644990597373347877',
+    'SCRIPT_URL' => '/panel-admin/web/api/contenido',
+    'SCRIPT_URI' => 'https://ecolens.site/panel-admin/web/api/contenido',
+    'HTTPS' => 'on',
+    'SSL_TLS_SNI' => 'ecolens.site',
+    'HTTP2' => 'on',
+    'H2PUSH' => 'off',
+    'H2_PUSH' => 'off',
+    'H2_PUSHED' => '',
+    'H2_PUSHED_ON' => '',
+    'H2_STREAM_ID' => '3',
+    'H2_STREAM_TAG' => '47877-525-3',
+    'SERVER_SIGNATURE' => '',
+    'SERVER_SOFTWARE' => 'Apache',
+    'SERVER_NAME' => 'ecolens.site',
+    'SERVER_ADDR' => '50.6.138.159',
+    'SERVER_PORT' => '443',
+    'REMOTE_ADDR' => '190.114.38.97',
+    'DOCUMENT_ROOT' => '/home3/rogelio3/ecolens.site',
+    'REQUEST_SCHEME' => 'https',
+    'CONTEXT_PREFIX' => '',
+    'CONTEXT_DOCUMENT_ROOT' => '/home3/rogelio3/ecolens.site',
+    'SERVER_ADMIN' => 'webmaster@ecolens.rogeliomunoz.cl',
+    'SCRIPT_FILENAME' => '/home3/rogelio3/ecolens.site/panel-admin/web/index-api.php',
+    'REMOTE_PORT' => '7414',
+    'REDIRECT_URL' => '/panel-admin/web/api/contenido',
+    'SERVER_PROTOCOL' => 'HTTP/2.0',
+    'REQUEST_METHOD' => 'GET',
+    'QUERY_STRING' => '',
+    'REQUEST_URI' => '/panel-admin/web/api/contenido',
+    'SCRIPT_NAME' => '/panel-admin/web/index-api.php',
+    'PHP_SELF' => '/panel-admin/web/index-api.php',
+    'REQUEST_TIME_FLOAT' => 1761064499.075953960418701171875,
+    'REQUEST_TIME' => 1761064499,
+    'argv' => [],
+    'argc' => 0,
+]
+[21-Oct-2025 15:33:11 America/Santiago] PHP Warning:  http_response_code(): Cannot set response code - headers already sent (output started at /home3/rogelio3/ecolens.site/panel-admin/modules/api/controllers/ContenidoController.php:151) in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/ErrorHandler.php on line 144
+[21-Oct-2025 15:33:11 America/Santiago] An Error occurred while handling another error:
+yii\web\HeadersAlreadySentException: Headers already sent in /home3/rogelio3/ecolens.site/panel-admin/modules/api/controllers/ContenidoController.php on line 151. in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/web/Response.php:369
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/web/Response.php(342): yii\web\Response->sendHeaders()
+#1 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/web/ErrorHandler.php(136): yii\web\Response->send()
+#2 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/ErrorHandler.php(152): yii\web\ErrorHandler->renderException(Object(yii\web\HeadersAlreadySentException))
+#3 [internal function]: yii\base\ErrorHandler->handleException(Object(yii\web\HeadersAlreadySentException))
+#4 {main}
+Previous exception:
+yii\web\HeadersAlreadySentException: Headers already sent in /home3/rogelio3/ecolens.site/panel-admin/modules/api/controllers/ContenidoController.php on line 151. in /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/web/Response.php:369
+Stack trace:
+#0 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/web/Response.php(342): yii\web\Response->sendHeaders()
+#1 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php(659): yii\web\Response->send()
+#2 /home3/rogelio3/ecolens.site/panel-admin/modules/api/controllers/ContenidoController.php(170): yii\base\Application->end()
+#3 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Controller.php(176): app\modules\api\controllers\ContenidoController->beforeAction(Object(yii\base\InlineAction))
+#4 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Module.php(552): yii\base\Controller->runAction('', Array)
+#5 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('api/contenido', Array)
+#6 /home3/rogelio3/ecolens.site/panel-admin/vendor/yiisoft/yii2/base/Application.php(384): yii\web\Application->handleRequest(Object(yii\web\Request))
+#7 /home3/rogelio3/ecolens.site/panel-admin/web/index-api.php(14): yii\base\Application->run()
+#8 {main}
+$_SERVER = [
+    'LSPHP_ENABLE_USER_INI' => 'on',
+    'PATH' => '/usr/local/bin:/usr/bin:/bin',
+    'TEMP' => '/tmp',
+    'TMP' => '/tmp',
+    'TMPDIR' => '/tmp',
+    'PWD' => '/',
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate, br, zstd',
+    'HTTP_ACCEPT_LANGUAGE' => 'es-419,es;q=0.9,es-ES;q=0.8,en;q=0.7,en-GB;q=0.6,en-US;q=0.5,es-CL;q=0.4,es-MX;q=0.3',
+    'CONTENT_LENGTH' => '0',
+    'HTTP_COOKIE' => '_tccl_visitor=5b92333f-9959-480b-9da1-7eb2cd98f70a; x-visitor-id=46919683-c880-4bc3-b398-1a9e8da7f4a3; cookie_warning_dismissed=true; cookie_terms_accepted=true; PHPSESSID=eaa1a822175c1d88e33d5cdbf36d324d; _identity=51cfcd4614f8697df989e9d5a6bbc7ac068ff4787f40ec3b248c19e05173fd1ca%3A2%3A%7Bi%3A0%3Bs%3A9%3A%22_identity%22%3Bi%3A1%3Bs%3A214%3A%22%5B1%2C%228f23d8ca137ee3474f6363fb6f5fbcb9a5bd41e6d0ab3502ebd44b2b7934c9ee1375e176f67ce09ef8c0b41498c4f9b119cb67f9d1ed519b07f374058807b83b98a58e6def69e87ab19b5d57478f4912211f48c1a2c78531b541873fb4dbfe9baaec2f05%22%2C2592000%5D%22%3B%7D; _csrf=7e2c390ad12477627c751ee77a4c9ae3c07ba9a5f0d43554b76afa45ce7fcbe6a%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%22ZGwiMtDVUY22bEm1AOW9IChq8xM8KHZk%22%3B%7D',
+    'HTTP_HOST' => 'ecolens.site',
+    'HTTP_REFERER' => 'https://ecolens.site/panel-admin/web/api/contenido',
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0',
+    'HTTP_SEC_CH_UA_PLATFORM' => '"macOS"',
+    'HTTP_SEC_CH_UA' => '"Microsoft Edge";v="141", "Not?A_Brand";v="8", "Chromium";v="141"',
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1',
+    'HTTP_SEC_CH_UA_MOBILE' => '?0',
+    'HTTP_SEC_FETCH_SITE' => 'same-origin',
+    'HTTP_SEC_FETCH_MODE' => 'navigate',
+    'HTTP_SEC_FETCH_DEST' => 'empty',
+    'HTTP_PRIORITY' => 'u=0, i',
+    'HTTP_X_HTTPS' => '1',
+    'REDIRECT_UNIQUE_ID' => 'aPfR5hZNQ8g5HPnAR8g5DAAADiI',
+    'REDIRECT_QS_ConnectionId' => '176107159025046518433825',
+    'REDIRECT_SCRIPT_URL' => '/panel-admin/web/api/contenido',
+    'REDIRECT_SCRIPT_URI' => 'https://ecolens.site/panel-admin/web/api/contenido',
+    'REDIRECT_HTTPS' => 'on',
+    'REDIRECT_SSL_TLS_SNI' => 'ecolens.site',
+    'REDIRECT_HTTP2' => 'on',
+    'REDIRECT_H2PUSH' => 'off',
+    'REDIRECT_H2_PUSH' => 'off',
+    'REDIRECT_H2_PUSHED' => '',
+    'REDIRECT_H2_PUSHED_ON' => '',
+    'REDIRECT_H2_STREAM_ID' => '3',
+    'REDIRECT_H2_STREAM_TAG' => '433825-1637-3',
+    'REDIRECT_STATUS' => '200',
+    'UNIQUE_ID' => 'aPfR5hZNQ8g5HPnAR8g5DAAADiI',
+    'QS_ConnectionId' => '176107159025046518433825',
+    'SCRIPT_URL' => '/panel-admin/web/api/contenido',
+    'SCRIPT_URI' => 'https://ecolens.site/panel-admin/web/api/contenido',
+    'HTTPS' => 'on',
+    'SSL_TLS_SNI' => 'ecolens.site',
+    'HTTP2' => 'on',
+    'H2PUSH' => 'off',
+    'H2_PUSH' => 'off',
+    'H2_PUSHED' => '',
+    'H2_PUSHED_ON' => '',
+    'H2_STREAM_ID' => '3',
+    'H2_STREAM_TAG' => '433825-1637-3',
+    'SERVER_SIGNATURE' => '',
+    'SERVER_SOFTWARE' => 'Apache',
+    'SERVER_NAME' => 'ecolens.site',
+    'SERVER_ADDR' => '50.6.138.159',
+    'SERVER_PORT' => '443',
+    'REMOTE_ADDR' => '190.114.38.97',
+    'DOCUMENT_ROOT' => '/home3/rogelio3/ecolens.site',
+    'REQUEST_SCHEME' => 'https',
+    'CONTEXT_PREFIX' => '',
+    'CONTEXT_DOCUMENT_ROOT' => '/home3/rogelio3/ecolens.site',
+    'SERVER_ADMIN' => 'webmaster@ecolens.rogeliomunoz.cl',
+    'SCRIPT_FILENAME' => '/home3/rogelio3/ecolens.site/panel-admin/web/index-api.php',
+    'REMOTE_PORT' => '7547',
+    'REDIRECT_URL' => '/panel-admin/web/api/contenido',
+    'REDIRECT_QUERY_STRING' => 'api_key=2025_admin',
+    'SERVER_PROTOCOL' => 'HTTP/2.0',
+    'REQUEST_METHOD' => 'GET',
+    'QUERY_STRING' => 'api_key=2025_admin',
+    'REQUEST_URI' => '/panel-admin/web/api/contenido?api_key=2025_admin',
+    'SCRIPT_NAME' => '/panel-admin/web/index-api.php',
+    'PHP_SELF' => '/panel-admin/web/index-api.php',
+    'REQUEST_TIME_FLOAT' => 1761071590.7877190113067626953125,
+    'REQUEST_TIME' => 1761071590,
+    'argv' => [
+        'api_key=2025_admin',
+    ],
+    'argc' => 1,
+]
+[21-Oct-2025 20:54:13 America/Santiago] PHP Warning:  require(/home3/rogelio3/ecolens.site/panel-admin/web/../vendor/autoload.php): Failed to open stream: No such file or directory in /home3/rogelio3/ecolens.site/panel-admin/web/index-api.php on line 6
+[21-Oct-2025 20:54:13 America/Santiago] PHP Fatal error:  Uncaught Error: Failed opening required '/home3/rogelio3/ecolens.site/panel-admin/web/../vendor/autoload.php' (include_path='.:/opt/cpanel/ea-php83/root/usr/share/pear') in /home3/rogelio3/ecolens.site/panel-admin/web/index-api.php:6
+Stack trace:
+#0 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/web/index-api.php on line 6
+[21-Oct-2025 20:57:07 America/Santiago] PHP Warning:  require(/home3/rogelio3/ecolens.site/panel-admin/web/../vendor/autoload.php): Failed to open stream: No such file or directory in /home3/rogelio3/ecolens.site/panel-admin/web/index-api.php on line 6
+[21-Oct-2025 20:57:07 America/Santiago] PHP Fatal error:  Uncaught Error: Failed opening required '/home3/rogelio3/ecolens.site/panel-admin/web/../vendor/autoload.php' (include_path='.:/opt/cpanel/ea-php83/root/usr/share/pear') in /home3/rogelio3/ecolens.site/panel-admin/web/index-api.php:6
+Stack trace:
+#0 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/web/index-api.php on line 6
+[21-Oct-2025 20:58:38 America/Santiago] PHP Warning:  require(/home3/rogelio3/ecolens.site/panel-admin/web/../vendor/autoload.php): Failed to open stream: No such file or directory in /home3/rogelio3/ecolens.site/panel-admin/web/index-api.php on line 6
+[21-Oct-2025 20:58:38 America/Santiago] PHP Fatal error:  Uncaught Error: Failed opening required '/home3/rogelio3/ecolens.site/panel-admin/web/../vendor/autoload.php' (include_path='.:/opt/cpanel/ea-php83/root/usr/share/pear') in /home3/rogelio3/ecolens.site/panel-admin/web/index-api.php:6
+Stack trace:
+#0 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/web/index-api.php on line 6
+[21-Oct-2025 20:58:46 America/Santiago] PHP Warning:  require(/home3/rogelio3/ecolens.site/panel-admin/web/../vendor/autoload.php): Failed to open stream: No such file or directory in /home3/rogelio3/ecolens.site/panel-admin/web/index-api.php on line 6
+[21-Oct-2025 20:58:46 America/Santiago] PHP Fatal error:  Uncaught Error: Failed opening required '/home3/rogelio3/ecolens.site/panel-admin/web/../vendor/autoload.php' (include_path='.:/opt/cpanel/ea-php83/root/usr/share/pear') in /home3/rogelio3/ecolens.site/panel-admin/web/index-api.php:6
+Stack trace:
+#0 {main}
+  thrown in /home3/rogelio3/ecolens.site/panel-admin/web/index-api.php on line 6

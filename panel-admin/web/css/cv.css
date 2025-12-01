@@ -1,0 +1,226 @@
+/* ======== CONFIGURACIÓN GENERAL ======== */
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #fff;  /* Fondo blanco, estilo Word */
+    color: #000;             /* Texto negro por defecto */
+    line-height: 1.15;       /* Interlineado similar a Word */
+}
+
+/* ======== CONTENEDOR PRINCIPAL (SIMULA A4) ======== */
+.container-cv {
+    width: 21cm;             /* Ancho de hoja A4 */
+    min-height: 29.7cm;      /* Alto mínimo para A4 */
+    margin: 20px auto;       /* Espacio arriba/abajo y centrado horizontal */
+    padding: 2.5cm;          /* Márgenes ~2.54 cm */
+    box-sizing: border-box;  /* Incluye el padding en el ancho */
+    border: 1px solid #999;  /* Borde para demarcar la hoja */
+}
+
+/* ======== FUENTE GLOBAL: CALIBRI LIGHT, 8pt ======== */
+.container-cv * {
+    font-family: 'Calibri Light', sans-serif;
+    font-size: 8pt;
+}
+
+/* ======== TÍTULOS (H2, H3) => 9pt, NEGRITA ======== */
+.container-cv h2,
+.container-cv h3 {
+    font-size: 9pt;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-transform: none;
+    color: #000;
+}
+
+/* ======== EXCEPCIÓN: INFORMACIÓN PERSONAL (personal-info) ======== */
+.container-cv .personal-info h1 {
+    font-family: 'Arial', sans-serif;  /* Ejemplo distinto */
+    font-size: 16pt;                   /* Más grande para el nombre */
+    margin: 0 0 5px;
+    font-weight: bold;
+    text-align: center;
+    font-style: italic;
+}
+
+.container-cv .personal-info p {
+    font-family: 'Arial', sans-serif;
+    font-size: 12pt;       /* Subtítulos un poco más grandes */
+    margin: 0;
+    font-style: italic;
+    line-height: 1.2;
+    text-align: center;
+}
+
+/* ======== PÁRRAFOS GENERALES ======== */
+.container-cv p {
+    margin-bottom: 10px;
+    text-align: justify;   /* Word justifica por defecto */
+}
+
+/* ======== LISTAS ======== */
+.container-cv ul {
+    list-style: disc outside;
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+
+.container-cv li {
+    margin-bottom: 5px;
+}
+
+/* ======== SEPARADOR (HR) ======== */
+.container-cv hr {
+    border: none;
+    border-top: 1px solid #999;
+    margin: 20px 0;
+}
+
+/* ======== SECCIÓN DE ACTUALIZACIÓN ======== */
+.container-cv .update-section {
+    text-align: center;
+    font-size: 8pt; /* Consistente con el resto */
+    margin-top: 30px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+    font-style: italic;
+}
+
+/* ======== BOTONES DE DESCARGA ======== */
+.btn-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn-download {
+    background-color: #444;
+    color: #fff;
+    font-size: 14px;
+    padding: 8px 16px;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-download:hover {
+    background-color: #333;
+}
+
+/* ======== ENLACES DEL CV (SOLO EN .container-cv) ======== */
+.container-cv a.cv-link {
+    color: #0000EE;         /* Azul hipervínculo */
+    text-decoration: none;
+}
+
+.container-cv a.cv-link:hover {
+    text-decoration: underline;
+}
+
+
+
+/* Contenedor general de Formación Académica */
+.formacion-academica {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Separación entre cada registro */
+  }
+  
+  /* Cada “fila” principal que contiene institución y período */
+  .formacion-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  /* Parte izquierda (institución) */
+  .formacion-left {
+    width: 70%;  /* Ajusta según tu preferencia */
+    text-align: left;
+  }
+  
+  /* Parte derecha (período) */
+  .formacion-right {
+    width: 30%;
+    text-align: right;
+  }
+  
+  /* Grado/título en la siguiente línea */
+  .formacion-subitem {
+    margin-left: 0;   /* Puedes darle algo de sangría si gustas, ej. 20px */
+    font-style: italic;
+    /* Ajusta estilos, tamaño, etc. según tu gusto */
+  }
+  
+
+  .container-cv i {
+    font-family: "Font Awesome 5 Free" !important;
+    font-weight: 900 !important; /* Solo si usas iconos sólidos */
+    font-size: 1.2em;           /* Ajusta el tamaño según convenga */
+    display: inline-block;      /* Asegura que se muestren como inline-block */
+    vertical-align: middle;     /* Ajusta la alineación vertical si es necesario */
+}
+
+/* ======== BOTONES DE DESCARGA ======== */
+.btn-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn-download {
+    background-color: #444;
+    color: #fff;
+    font-size: 14px;
+    padding: 8px 16px;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-download:hover {
+    background-color: #333;
+}
+
+/* Botón PDF: similar al de Adobe Acrobat (rojo) */
+.btn-pdf {
+    background-color: #e02f2f;
+    color: #fff;
+}
+
+.btn-pdf:hover {
+    background-color: #c01f1f;
+}
+
+/* Botón Word: característico de Microsoft Word (azul) */
+.btn-word {
+    background-color: #2b579a;
+    color: #fff;
+}
+
+.btn-word:hover {
+    background-color: #24487a;
+}
+
+/* Botón LaTeX: se usa un tono púrpura */
+.btn-latex {
+    background-color: #8e44ad;
+    color: #fff;
+}
+
+.btn-latex:hover {
+    background-color: #7d3c98;
+}
+
+/* Asegurarse de que los íconos de Font Awesome se muestren correctamente */
+.container-cv i {
+    font-family: "Font Awesome 5 Free" !important;
+    font-weight: 900 !important;
+    font-size: 1.2em;
+    display: inline-block;
+    vertical-align: middle;
+}

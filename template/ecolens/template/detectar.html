@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detectar Especie | EcoLens</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&family=Lora:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+    <style>
+      /* Estilo para el contenedor del mapa (Nuevo) */
+      #map-container {
+        height: 300px;
+        width: 100%;
+        margin-top: 1rem;
+        border-radius: 8px;
+        display: none; /* Oculto por defecto */
+      }
+    </style>
+  </head>
+  <body>
+    <header id="main-header"></header>
+
+    <main>
+      <section class="upload-section container">
+        <h1>Detectar una Especie</h1>
+        <p>Sube una foto clara de la fauna chilena para su identificación.</p>
+
+        <div class="upload-form">
+          <div class="location-box" aria-labelledby="ubicacion-titulo">
+            <h2 id="ubicacion-titulo" class="sr-only">Ubicación</h2>
+
+            <div class="location-group">
+              <label for="location-friendly">Ubicación Detectada:</label>
+              <input
+                type="text"
+                id="location-friendly"
+                placeholder="Ej: Parque Nacional Conguillío, Araucanía"
+                readonly
+              />
+            </div>
+
+            <div class="location-group">
+              <label for="geocoords">Coordenadas Técnicas (Lat, Lon):</label>
+              <div class="location-controls">
+                <input
+                  type="text"
+                  id="geocoords"
+                  placeholder="Ubicación no capturada"
+                  readonly
+                />
+                <button
+                  id="get-location-button"
+                  class="cta-button secondary-button"
+                  type="button"
+                  aria-describedby="location-status"
+                >
+                  📍 Obtener mi ubicación
+                </button>
+              </div>
+
+              <div id="map-container"></div>
+
+              <p
+                id="location-status"
+                class="file-name"
+                style="text-align: left; margin-top: 6px"
+                aria-live="polite"
+              ></p>
+            </div>
+          </div>
+
+          <div
+            class="upload-box"
+            role="button"
+            tabindex="0"
+            onclick="document.getElementById('image-upload').click()"
+            onkeypress="if(event.key==='Enter'||event.key===' '){document.getElementById('image-upload').click();}"
+          >
+            <span class="upload-icon">📸</span>
+            <p>Haz clic para subir una imagen</p>
+            <p id="file-name" class="file-name"></p>
+            <input
+              type="file"
+              id="image-upload"
+              accept="image/*"
+              class="file-input"
+            />
+          </div>
+
+          <div id="image-preview" class="image-preview" style="display: none">
+            <h3>Vista Previa:</h3>
+            <img
+              id="preview-image"
+              src=""
+              alt="Vista previa de la imagen a detectar"
+            />
+          </div>
+
+          <a
+            href="resultado.html"
+            id="detect-button"
+            class="cta-button"
+            style="display: none"
+          >
+            Analizar Imagen
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer id="main-footer"></footer>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="assets/js/script.js"></script>
+  </body>
+</html>

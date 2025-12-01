@@ -1,0 +1,15 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Ajusta esto al path de tu proyecto en MAMP
+  RewriteBase /SITIOS/rogeliomunoz_final/panel-admin/web/
+
+  # Si la URL comienza con "api/" y no es un archivo real, pásala a web-api.php
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^api/(.*)$ web-api.php/$1 [L,QSA]
+</IfModule>
+
+<IfModule mod_negotiation.c>
+  # Asegura que PATH_INFO funcione en MAMP
+  AcceptPathInfo On
+</IfModule>

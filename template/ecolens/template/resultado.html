@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resultado | EcoLens</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&family=Lora:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+  </head>
+  <body>
+    <header id="main-header"></header>
+    <main>
+      <section class="result-section container">
+        <h1>Resultado de la Detección</h1>
+        <div class="result-card">
+          <div class="result-image">
+            <img
+              src="https://picsum.photos/600/400?random=10"
+              alt="Imagen del Lince Rojo"
+            />
+          </div>
+
+          <div class="result-details">
+            <h2>Resultado del Modelo Router</h2>
+            <div class="result-block">
+              <p>Clase Taxonómica Estimada:</p>
+              <h3>Mammalia</h3>
+              <div class="confidence-bar">
+                <span class="confidence-text">Confianza: 88%</span>
+                <div class="bar-fill" style="width: 88%"></div>
+              </div>
+              <p class="metadata-info">
+                Modelo: EfficientNet-B5 | Latencia: 120 ms
+              </p>
+            </div>
+
+            <h2 style="margin-top: 2rem">Resultado del Modelo Experto</h2>
+            <div class="result-block">
+              <p>Especie Estimada (Experto Mammalia):</p>
+              <h3>Lynx rufus (Lince Rojo/Gato Montés)</h3>
+              <div class="confidence-bar">
+                <span class="confidence-text">Confianza (Recall): 86%</span>
+                <div
+                  class="bar-fill"
+                  style="width: 86%; background-color: #4caf50"
+                ></div>
+              </div>
+              <p class="metadata-info">
+                Modelo: EfficientNet-B5 | Precisión (Macro Avg):
+                <strong>0,94</strong> (94%)
+              </p>
+            </div>
+
+            <div class="species-info">
+              <h3>Información Contextual (CMS)</h3>
+              <p>
+                Esta sección simula datos extraídos de tu CMS. El Lince Rojo
+                (*Lynx rufus*) es un felino nativo que se utiliza aquí como
+                ejemplo de clasificación dentro de los mamíferos entrenados en
+                el dataset de 10 clases.
+              </p>
+              <a
+                href="especie.html?id=lynx"
+                class="cta-button secondary-button"
+                style="width: auto"
+                >Ver Ficha Completa y Mapa de Distribución</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer id="main-footer"></footer>
+
+    <script src="assets/js/script.js"></script>
+  </body>
+</html>
