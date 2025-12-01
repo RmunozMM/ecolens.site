@@ -203,6 +203,11 @@ Consultor en Transformación Digital y CRM | Arquitecto de Soluciones
 Sitio personal: **rogeliomunoz.cl**  
 Contacto: **rmunoz1612@gmail.com**
 
+Valeria Soriano
+Ingeniero Civil Industrial
+
+Contacto: **vsorianof@gmail.com**
+
 ---
 
 ## ⚖️ Licencia
