@@ -206,7 +206,7 @@ Contacto: **rmunoz1612@gmail.com**
 **Valeria Soriano**
 Ingeniero Civil Industrial
 
-Contacto: **vsorianof@gmail.com**
+Contacto: **valeriapaz.sf@gmail.com**
 
 ---
 
