@@ -153,15 +153,33 @@ class MonitoreoController extends Controller
      * -----------------------------*/
     public function actionIndex()
     {
-        // Rango: ?rango=24h|7d|30d
+        // Rango: ?rango=24h|7d|30d|todo
         $rango = Yii::$app->request->get('rango', '24h');
         $now   = time();
-        if ($rango === '7d') {
-            $desde = date('Y-m-d H:i:s', $now - 7*86400);
-        } elseif ($rango === '30d') {
-            $desde = date('Y-m-d H:i:s', $now - 30*86400);
-        } else {
-            $desde = date('Y-m-d H:i:s', $now - 24*3600);
+
+        switch ($rango) {
+            case '7d':
+                $desde = date('Y-m-d H:i:s', $now - 7 * 86400);
+                break;
+            case '30d':
+                $desde = date('Y-m-d H:i:s', $now - 30 * 86400);
+                break;
+            case 'todo':
+                // Mínima fecha de la tabla; si no hay datos, 1 año atrás
+                $minFecha = (new Query())
+                    ->from('detecciones')
+                    ->min('det_fecha');
+                if ($minFecha) {
+                    $desde = $minFecha;
+                } else {
+                    $desde = date('Y-m-d H:i:s', $now - 365 * 86400);
+                }
+                break;
+            case '24h':
+            default:
+                $rango = '24h';
+                $desde = date('Y-m-d H:i:s', $now - 24 * 3600);
+                break;
         }
 
         // KPIs
@@ -191,7 +209,7 @@ class MonitoreoController extends Controller
 
         $latP = $this->percentiles(array_map('floatval', $latencias), [50,90,95,99]);
 
-        // Serie temporal (por hora para 24h/7d, por día para 30d)
+        // Serie temporal (por hora para 24h/7d, por día para 30d/todo)
         $agrupaPorHora = ($rango === '24h' || $rango === '7d');
         $bucketExpr = $agrupaPorHora
             ? new Expression("DATE_FORMAT(det_fecha, '%Y-%m-%d %H:00:00')")
@@ -199,13 +217,13 @@ class MonitoreoController extends Controller
 
         $serieDet = (new Query())
             ->select([
-                'bucket' => $bucketExpr,                    // alias solo en SELECT
+                'bucket' => $bucketExpr,
                 'c'      => new Expression('COUNT(*)'),
             ])
             ->from('detecciones')
             ->where(['>=','det_fecha',$desde])
-            ->groupBy($bucketExpr)                         // misma expresión para agrupar
-            ->orderBy($bucketExpr)                         // y para ordenar (evita bug del alias)
+            ->groupBy($bucketExpr)
+            ->orderBy($bucketExpr)
             ->all();
 
         // Top 5 especies
@@ -446,7 +464,7 @@ class MonitoreoController extends Controller
             'siteBase'    => $siteBase,
             'predictUrl'  => $predict,
             'whoamiUrl'   => $whoami,
-            'pingPredict' => $pingPredict, // ['ok'=>bool,'status'=>int,'time_ms'=>int]
+            'pingPredict' => $pingPredict,
             'pingWhoami'  => $pingWhoami,
             'dbOk'        => $dbOk,
         ]);

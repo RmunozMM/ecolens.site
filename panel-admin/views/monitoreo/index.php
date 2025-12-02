@@ -4,25 +4,56 @@
 /** @var int $totalDetecciones */
 /** @var float $promedioPrecision */
 /** @var int $latenciaPromedioMs */
-/** @var array $latP */              // ['p50'=>..., 'p90'=>..., 'p95'=>..., 'p99'=>...]
-/** @var array $serieDet */          // [{bucket:'2025-10-25 12:00:00', c: 3}, ...]
+/** @var array $latP */
+/** @var array $serieDet */
 /** @var bool $agrupaPorHora */
 /** @var string $trl */
-/** @var array $topEspecies */       // [{esp_nombre_comun:'Zorro', conteo:12}, ...]
-/** @var array $precisionEspecie */  // [{esp_nombre_comun:'Zorro', prom:0.87, n:21}, ...]
-/** @var array $topObservadores */   // [{obs_nombre:'Ana', obs_usuario:'ana', conteo:14}, ...]
-/** @var array $ultimas */           // [{det_id, det_fecha, det_latitud, det_longitud, det_tiempo_router_ms, esp_nombre_comun, obs_nombre}, ...]
-/** @var array $geoPuntos */         // [{lat:-33.4, lng:-70.6}, ...]
+/** @var array $topEspecies */
+/** @var array $precisionEspecie */
+/** @var array $topObservadores */
+/** @var array $ultimas */
+/** @var array $geoPuntos */
+
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 $this->title = "Monitoreo | Panel";
+
+/** Sección activa */
+$actionId = $this->context->action->id ?? 'index';
 ?>
 <h1>Dashboard de Monitoreo y Telemetría</h1>
+
+<nav class="mon-nav">
+  <span class="mon-nav-label">Sección:</span>
+
+  <a href="<?= Url::to(['monitoreo/index', 'rango' => $rango]) ?>"
+     class="mon-tab <?= $actionId === 'index' ? 'active' : '' ?>">
+    Detecciones
+  </a>
+
+  <a href="<?= Url::to(['monitoreo/usuarios']) ?>"
+     class="mon-tab <?= $actionId === 'usuarios' ? 'active' : '' ?>">
+    Usuarios
+  </a>
+
+  <a href="<?= Url::to(['monitoreo/sistema']) ?>"
+     class="mon-tab <?= $actionId === 'sistema' ? 'active' : '' ?>">
+    Sistema
+  </a>
+
+  <a href="<?= Url::to(['monitoreo/api']) ?>"
+     class="mon-tab <?= $actionId === 'api' ? 'active' : '' ?>">
+    API
+  </a>
+</nav>
+
 <p class="subtitle">
   Métricas internas del sistema · Rango:
   <a class="chip <?= $rango==='24h'?'active':'' ?>" href="?rango=24h">24h</a>
   <a class="chip <?= $rango==='7d'?'active':'' ?>"  href="?rango=7d">7 días</a>
   <a class="chip <?= $rango==='30d'?'active':'' ?>" href="?rango=30d">30 días</a>
+  <a class="chip <?= $rango==='todo'?'active':'' ?>" href="?rango=todo">Todo</a>
   <span class="from">desde <?= Html::encode($desde) ?></span>
 </p>
 
@@ -106,7 +137,13 @@ $this->title = "Monitoreo | Panel";
       <tbody>
       <?php foreach ($ultimas as $row): ?>
         <tr>
-          <td class="num"><?= (int)$row['det_id'] ?></td>
+          <td class="num">
+            <?= Html::a(
+                (int)$row['det_id'],
+                "https://ecolens.site/sitio/web/detalle-deteccion/" . (int)$row['det_id'],
+                ['target' => '_blank', 'rel' => 'noopener']
+            ) ?>
+          </td>
           <td><?= Html::encode($row['det_fecha']) ?></td>
           <td><?= Html::encode($row['esp_nombre_comun'] ?? '—') ?></td>
           <td><?= Html::encode($row['obs_nombre'] ?? '—') ?></td>
@@ -176,6 +213,37 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 <style>
+.mon-nav{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:.5rem;
+  margin:.25rem 0 .75rem;
+}
+.mon-nav-label{
+  color:#64748b;
+  font-size:.9rem;
+  margin-right:.25rem;
+}
+.mon-tab{
+  padding:.25rem .8rem;
+  border-radius:9999px;
+  border:1px solid #e2e8f0;
+  text-decoration:none;
+  font-size:.9rem;
+  color:#475569;
+  background:#ffffff;
+  transition:.12s ease-out;
+}
+.mon-tab:hover{
+  background:#f1f5f9;
+}
+.mon-tab.active{
+  background:#0f172a;
+  color:#ffffff;
+  border-color:#0f172a;
+}
+
 .subtitle{margin:.3rem 0 1rem;color:#64748b}
 .subtitle .chip{display:inline-block;padding:.2rem .6rem;border-radius:9999px;background:#eef2f7;color:#334155;text-decoration:none;margin-left:.25rem;font-weight:600}
 .subtitle .chip.active{background:#1f7a8c;color:#fff}
