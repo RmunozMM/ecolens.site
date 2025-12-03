@@ -2,135 +2,185 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-/* * NOTA: Asumo que las imágenes 'hero-ecolens.jpg' y 'arquitectura-ecolens.png' 
- * están en tu directorio 'web/images' o similar. 
- * Debes ajustar las rutas a donde tengas alojadas estas imágenes.
- * He usado las imágenes de tu PPT/Tesis.
- */
-$heroImageUrl = Url::to('@web/images/hero-ecolens.jpg'); // Reemplazar con la ruta a la imagen de la Diapositiva 2 
-$architectureImageUrl = Url::to('@web/images/arquitectura-ecolens.png'); // Reemplazar con la ruta a la imagen del Diagrama 
-
 $this->title = 'Acerca de EcoLens';
 $this->params['breadcrumbs'][] = $this->title;
+
+// Rutas en duro al estilo “no me voy a calentar la cabeza”
+$heroImageUrl         = '/sitio/web/themes/default/assets/img/hero-ecolens.png';
+$architectureImageUrl = '/sitio/web/themes/default/assets/img/arquitectura-ecolens.png';
+$fotoRogelio          = '/sitio/web/themes/default/assets/img/equipo-rogelio.jpeg';
+$fotoValeria          = '/sitio/web/themes/default/assets/img/equipo-valeria.jpeg';
 ?>
 
 <div class="site-about">
     <section class="about-section container">
         
         <div class="header-image-wrapper">
-            <img src="<?= $heroImageUrl ?>" alt="EcoLens en acción identificando fauna" class="hero-image">
+            <img src="<?= Html::encode($heroImageUrl) ?>" 
+                 alt="EcoLens identificando fauna en parques nacionales" 
+                 class="hero-image">
             <h1 class="hero-title">Acerca del Proyecto EcoLens</h1>
         </div>
         
         <p class="project-intro">
-            EcoLens es un proyecto de desarrollo tecnológico aplicado que diseña e
-            implementa un prototipo funcional (TRL-4) de clasificación automática
-            de fauna silvestre chilena, accesible desde dispositivos móviles,
-            mediante la **Visión por Computador**.
+            EcoLens es un proyecto de desarrollo tecnológico aplicado que diseña e 
+            implementa un prototipo funcional de clasificación automática de fauna
+            silvestre chilena, accesible desde dispositivos móviles, mediante 
+            técnicas de <strong>visión por computador</strong>.
+            El sistema alcanza <strong>TRL-4</strong> en laboratorio y evidencia
+            capacidades de <strong>TRL-5</strong> al operar en un entorno relevante.
         </p>
 
-        <h2 class="section-title">El Desafío y la Arquitectura</h2>
+        <h2 class="section-title">El desafío y la arquitectura</h2>
         <div class="about-grid">
             <div class="mission-vision">
-                <h3>El Desafío (Tesis)</h3>
+                <h3>El desafío (tesis)</h3>
                 <p>
                     El objetivo central es validar la viabilidad de un sistema que
-                    pueda identificar la **clase taxonómica** de un animal en tiempo
-                    real, superando las limitaciones de la baja disponibilidad de
-                    datos en fauna nativa chilena.
+                    pueda identificar la <strong>clase taxonómica</strong> de un
+                    animal en tiempo casi real, trabajando con la baja 
+                    disponibilidad de datos de fauna nativa chilena y las 
+                    restricciones de conectividad y recursos en terreno.
+                </p>
+                <p>
+                    El prototipo se orienta al uso en <strong>parques nacionales y
+                    áreas protegidas</strong>, ofreciendo una herramienta que 
+                    conecta visitantes, guardaparques e instituciones con datos
+                    estructurados sobre biodiversidad.
                 </p>
             </div>
             <div class="mission-vision">
-                <h3>Arquitectura del Sistema</h3>
+                <h3>Arquitectura del sistema</h3>
                 <p>
-                    El sistema se basa en una arquitectura **Coarse-to-Fine (Router +
-                    Expertos)**. El Modelo Router clasifica la Clase Taxonómica, y un
-                    Modelo Experto (Ej: Mamíferos) se activa para refinar la
+                    EcoLens se basa en una arquitectura jerárquica
+                    <strong>Coarse-to-Fine (Router + Expertos)</strong>. 
+                    Un modelo router generalista clasifica la clase taxonómica 
+                    (Mamíferos, Aves, Reptiles, Anfibios, Insectos, Arácnidos, Peces) 
+                    y, según corresponda, activa un modelo experto especializado 
+                    (por ejemplo, <strong>Mammalia</strong>) para refinar la
                     predicción.
                 </p>
+                <p>
+                    Esta separación permite escalar el sistema: se pueden incorporar
+                    nuevos expertos por grupo taxonómico sin reentrenar todo el
+                    pipeline, manteniendo un punto único de entrada para el usuario.
+                </p>
                 <div class="architecture-image-wrapper">
-                    <img src="<?= $architectureImageUrl ?>" alt="Diagrama de Arquitectura Coarse-to-Fine de EcoLens" class="architecture-image">
+                    <img src="<?= Html::encode($architectureImageUrl) ?>" 
+                         alt="Diagrama de arquitectura Coarse-to-Fine de EcoLens" 
+                         class="architecture-image">
                 </div>
             </div>
         </div>
 
         <h2 class="section-title" style="margin-top: 3rem">
-            Métricas de Desempeño y Logros
+            Métricas de desempeño y logros
         </h2>
         <p class="section-subtitle">
             El prototipo demuestra alta fiabilidad y eficiencia, cumpliendo los
-            siguientes criterios clave de la tesis:
+            principales criterios técnicos definidos en la tesis.
         </p>
 
         <div class="stats-grid">
             <div class="stat-item">
                 <i class="fas fa-bullseye stat-icon"></i>
-                <h3>Precisión de Clasificación</h3>
+                <h3>Desempeño de clasificación</h3>
                 <p>
-                    El modelo experto (Mammalia) alcanzó un <strong>~94%</strong> de
-                    accuracy en validación.
+                    El modelo router generalista alcanza 
+                    <strong>accuracy ≈ 0,92</strong> y 
+                    <strong>F1-macro ≈ 0,89</strong>. 
+                    El modelo experto para Mamíferos logra 
+                    <strong>F1-macro ≈ 0,90</strong> en validación con datos no vistos.
                 </p>
             </div>
             <div class="stat-item">
                 <i class="fas fa-database stat-icon"></i>
-                <h3>Dataset de Entrenamiento</h3>
+                <h3>Curaduría de datos</h3>
                 <p>
-                    Modelo entrenado con <strong>3000</strong> imágenes (300 por especie).
+                    Entrenamiento realizado sobre un conjunto de alrededor de 
+                    <strong>3&nbsp;000 imágenes curadas</strong> desde iNaturalist, 
+                    priorizando especies nativas y endémicas y depurando ruido, 
+                    duplicados y clasificaciones dudosas.
                 </p>
             </div>
             <div class="stat-item">
                 <i class="fas fa-tachometer-alt stat-icon"></i>
-                <h3>Latencia Objetivo</h3>
+                <h3>Latencia y experiencia de uso</h3>
                 <p>
-                    Respuesta (p95) &le; <strong>3s</strong> (logrando <strong>2.6s</strong> en piloto).
+                    El sistema cumple con una latencia objetivo de 
+                    <strong>p95 ≤ 3&nbsp;s</strong>, logrando aproximadamente 
+                    <strong>2,6&nbsp;s</strong> en el piloto desplegado, con una 
+                    disponibilidad superior al <strong>97&nbsp;%</strong> durante
+                    el periodo de pruebas.
                 </p>
             </div>
         </div>
 
         <h2 class="section-title" style="margin-top: 3rem">
-            El Equipo detrás de EcoLens
+            El equipo detrás de EcoLens
         </h2>
         <p class="section-subtitle">
-            Este proyecto fue desarrollado como trabajo de Tesis de Magíster en Ingeniería Informática (2024-2026) por:
+            Proyecto desarrollado como Trabajo de Tesis del 
+            <strong>Magíster en Ingeniería Informática</strong> (Universidad Andrés Bello, 2024–2026),
+            integrando investigación aplicada, ingeniería de software e inteligencia artificial.
         </p>
 
         <div class="team-grid">
             <div class="team-member-card">
-                <img src="https://media.licdn.com/dms/image/v2/D4E03AQHP_Jp55wM4MA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1712606417415?e=1762992000&v=beta&t=ckGhOB4FJ1sgy8MrELtNWQD4SJz9XFVTNd_AKmr_XE0" alt="Foto de Rogelio Muñoz Muñoz" class="team-member-photo">
+                <img src="<?= Html::encode($fotoRogelio) ?>" 
+                     alt="Foto de Rogelio Muñoz Muñoz" 
+                     class="team-member-photo">
                 <h3>Rogelio Muñoz Muñoz</h3>
-                <p class="role">Arquitectura de Soluciones &amp; Desarrollo IA (Backend)</p>
+                <p class="role">Arquitectura de soluciones &amp; backend IA</p>
                 <p>
-                    Ingeniero en Informática con más de 15 años de experiencia, especializado en arquitectura de soluciones, gestión de proyectos ágiles y desarrollo modular (CMS en Yii2).
-                    Como investigador principal de EcoLens, Rogelio diseñó la arquitectura <em>Coarse-to-Fine</em>, lideró el entrenamiento de los modelos de IA y desarrolló la API y el backend del sistema.
-                    Aporta su experiencia en Data Science y arquitecturas desacopladas para asegurar que EcoLens sea un prototipo escalable y robusto.
+                    Ingeniero en Informática con más de 15 años de experiencia en 
+                    arquitectura de soluciones, gestión de proyectos ágiles y 
+                    desarrollo modular (CMS en Yii2). 
+                    En EcoLens se desempeña como <strong>investigador principal</strong>,
+                    responsable del diseño de la arquitectura <em>Coarse-to-Fine</em>,
+                    del entrenamiento y orquestación de los modelos de IA, y del 
+                    desarrollo del backend y las APIs que conectan el modelo con
+                    el portal web y el panel de monitoreo.
                 </p>
-                <a href="https://www.linkedin.com/in/rogeliomunozmunoz" target="_blank" class="linkedin-link">Ver perfil en LinkedIn</a>
+                <a href="https://www.linkedin.com/in/rogeliomunozmunoz" 
+                   target="_blank" 
+                   rel="noopener" 
+                   class="linkedin-link">
+                    Ver perfil en LinkedIn
+                </a>
             </div>
 
             <div class="team-member-card">
-                <img src="https://media.licdn.com/dms/image/v2/C4E03AQEamMEZQDUdgA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1662725093661?e=1762992000&v=beta&t=wPVvCR33d6x-RmNVd7yONGDy7fSYhEf5HJoKIStGRBU" alt="Foto de Valeria Soriano Fernández" class="team-member-photo">
+                <img src="<?= Html::encode($fotoValeria) ?>" 
+                     alt="Foto de Valeria Soriano Fernández" 
+                     class="team-member-photo">
                 <h3>Valeria Soriano Fernández</h3>
-                <p class="role">Diseño de Interfaz &amp; Experiencia de Usuario (Frontend)</p>
+                <p class="role">Diseño de interfaz &amp; experiencia de usuario</p>
                 <p>
-                    Ingeniera Civil Industrial y candidata a Magíster en Ingeniería Informática, con especialización en Ciencia de Datos e Ingeniería de Software Aplicada.
-                    En el proyecto EcoLens, Valeria fue la responsable del diseño Frontend y la Experiencia de Usuario (UX).
-                    Aportó su visión analítica y su formación en IA (Practitioner IBM) para traducir la complejidad del modelo en una interfaz web funcional y accesible, además de colaborar en la curaduría de datos y las pruebas de usabilidad.
+                    Ingeniera Civil Industrial y candidata a Magíster en Ingeniería
+                    Informática, con formación en Ciencia de Datos e Ingeniería de 
+                    Software Aplicada. En EcoLens lidera el diseño de interfaz y 
+                    <strong>experiencia de usuario</strong>, traduciendo la complejidad 
+                    del modelo en un flujo de uso simple y accesible. 
+                    Además, colabora en la curaduría de datos, la definición de 
+                    requerimientos y las pruebas de usabilidad del prototipo web.
                 </p>
-                <a href="https://www.linkedin.com/in/valeria-paz-soriano-fernández-2184a3231" target="_blank" class="linkedin-link">Ver perfil en LinkedIn</a>
+                <a href="https://www.linkedin.com/in/valeria-paz-soriano-fernández-2184a3231" 
+                   target="_blank" 
+                   rel="noopener" 
+                   class="linkedin-link">
+                    Ver perfil en LinkedIn
+                </a>
             </div>
         </div>
 
-        <a href="<?= Url::to(['/site/contact']) ?>" class="cta-button">Contáctanos o Colabora</a>
+        <a href="<?= Url::to(['/contacto']) ?>" class="cta-button">
+            Contáctanos o colabora con EcoLens
+        </a>
     </section>
 </div>
 
 <style>
-    /* * ESTILOS REFINADOS - SIN PALETA DE COLORES PROPIA.
-     * Estos estilos dependen de las variables CSS de tu sitio (ej. --primary-color).
-     * Si no tienes --primary-color, reemplázalo por el color de tu logo (ej. #4CAF50).
-    */
-
-    /* --- Estructura General --- */
     .about-section {
         max-width: 1100px;
         margin: 2rem auto;
@@ -140,7 +190,7 @@ $this->params['breadcrumbs'][] = $this->title;
     .section-title {
         font-size: 2.2rem;
         font-weight: 700;
-        color: #333; /* Un color oscuro base, no compite con el primario */
+        color: #333;
         text-align: center;
         border-bottom: 3px solid #eee;
         padding-bottom: 15px;
@@ -156,11 +206,10 @@ $this->params['breadcrumbs'][] = $this->title;
         margin-bottom: 2.5rem;
     }
 
-    /* --- Cabecera con Imagen --- */
     .header-image-wrapper {
         position: relative;
         width: 100%;
-        max-height: 450px; /* Altura máxima para la imagen hero */
+        max-height: 450px;
         overflow: hidden;
         border-radius: 12px;
         box-shadow: 0 8px 16px rgba(0,0,0,0.1);
@@ -187,14 +236,13 @@ $this->params['breadcrumbs'][] = $this->title;
         font-weight: 700;
     }
 
-    /* --- Introducción --- */
     .project-intro {
         font-size: 1.15rem;
         line-height: 1.7;
-        background-color: #f9f9f9; /* Color neutro */
+        background-color: #f9f9f9;
         padding: 1.5rem 2rem;
         border-radius: 8px;
-        border-left: 5px solid var(--primary-color, #4CAF50); /* Usa variable, con fallback al verde de tu logo */
+        border-left: 5px solid var(--primary-color, #4CAF50);
         margin-bottom: 3rem;
         box-shadow: 0 4px 8px rgba(0,0,0,0.05);
     }
@@ -202,7 +250,6 @@ $this->params['breadcrumbs'][] = $this->title;
         color: var(--primary-color, #4CAF50);
     }
 
-    /* --- Grid de Contenido (Desafío y Arq.) --- */
     .about-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -215,7 +262,7 @@ $this->params['breadcrumbs'][] = $this->title;
         padding: 2rem;
         border-radius: 10px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        height: 100%; /* Asegura misma altura en el grid */
+        height: 100%;
     }
 
     .mission-vision h3 {
@@ -242,7 +289,6 @@ $this->params['breadcrumbs'][] = $this->title;
         border: 1px solid #ddd;
     }
 
-    /* --- Grid de Métricas --- */
     .stats-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -279,13 +325,11 @@ $this->params['breadcrumbs'][] = $this->title;
     }
     
     .stat-item p {
-        font-size: 1.4rem;
+        font-size: 0.98rem;
         margin-bottom: 0;
-        font-weight: 600;
         color: #111;
     }
 
-    /* --- Grid de Equipo --- */
     .team-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -342,12 +386,12 @@ $this->params['breadcrumbs'][] = $this->title;
         color: #333;
         text-align: left;
         margin-bottom: 1.5rem;
-        flex-grow: 1; /* Empuja el link de LinkedIn hacia abajo */
+        flex-grow: 1;
     }
 
     .team-member-card .linkedin-link {
         display: inline-block;
-        margin-top: auto; /* Se alinea al fondo */
+        margin-top: auto;
         font-size: 0.95rem;
         font-weight: 600;
         text-decoration: none;
@@ -364,7 +408,6 @@ $this->params['breadcrumbs'][] = $this->title;
         text-decoration: none;
     }
 
-    /* --- Botón CTA --- */
     .cta-button {
         display: block;
         width: fit-content;
@@ -382,14 +425,13 @@ $this->params['breadcrumbs'][] = $this->title;
     }
 
     .cta-button:hover {
-        color: #ffffff; /* Asegura color en hover */
+        color: #ffffff;
         text-decoration: none;
         transform: translateY(-3px);
         box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-        filter: brightness(110%); /* Un brillo sutil */
+        filter: brightness(110%);
     }
 
-    /* --- Media Queries (Responsividad) --- */
     @media (max-width: 992px) {
         .about-grid {
             grid-template-columns: 1fr;

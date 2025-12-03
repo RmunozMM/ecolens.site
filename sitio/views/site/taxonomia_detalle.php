@@ -24,14 +24,17 @@ $this->title = $taxonomia->tax_nombre_comun;
       <span class="latin"><?= htmlspecialchars($taxonomia->tax_nombre) ?></span>
     </p>
 
-    <div class="imagen-taxonomia">
-      <img src="<?= htmlspecialchars($taxonomia->tax_imagen) ?>"
-           alt="Imagen de <?= htmlspecialchars($taxonomia->tax_nombre) ?>"
-           class="img-fluid">
-    </div>
+    <!-- 🔁 NUEVO LAYOUT: imagen + descripción lado a lado en desktop -->
+    <div class="taxonomia-layout">
+      <div class="imagen-taxonomia">
+        <img src="<?= htmlspecialchars($taxonomia->tax_imagen) ?>"
+             alt="Imagen de <?= htmlspecialchars($taxonomia->tax_nombre) ?>"
+             class="img-fluid">
+      </div>
 
-    <div class="descripcion mt-4">
-      <?= $taxonomia->tax_descripcion ?>
+      <div class="descripcion mt-4">
+        <?= $taxonomia->tax_descripcion ?>
+      </div>
     </div>
 
     <?php if (!empty($especies)): ?>
@@ -40,15 +43,15 @@ $this->title = $taxonomia->tax_nombre_comun;
         <div class="row">
           <?php foreach ($especies as $esp): ?>
             <?php
-              $nombreComun = $esp->esp_nombre_comun ?? '';
-              $nombreCientifico = $esp->esp_nombre_cientifico ?? '';
-              $imagen = $esp->esp_imagen;
-              $slugTax = $taxonomia->tax_slug;
+              $nombreComun       = $esp->esp_nombre_comun ?? '';
+              $nombreCientifico  = $esp->esp_nombre_cientifico ?? '';
+              $imagen            = $esp->esp_imagen;
+              $slugTax           = $taxonomia->tax_slug;
 
-              // 🔹 Corregido: usar nombre científico para el slug
+              // 🔹 Slug desde nombre científico (como ya tenías)
               $slugEsp = Inflector::slug($nombreCientifico);
-              $base = Yii::$app->request->baseUrl;
-              $url = "{$base}/taxonomias/{$slugTax}/{$slugEsp}";
+              $base    = Yii::$app->request->baseUrl;
+              $url     = "{$base}/taxonomias/{$slugTax}/{$slugEsp}";
             ?>
             <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
               <a href="<?= $url ?>" class="card h-100 especie-card text-decoration-none text-dark">
@@ -94,6 +97,21 @@ $this->title = $taxonomia->tax_nombre_comun;
   color: #444;
 }
 
+/* 🔁 CONTENEDOR FLEX: imagen + descripción */
+.taxonomia-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-top: 1rem;
+}
+
+.imagen-taxonomia {
+  flex: 0 0 320px;
+  max-width: 360px;
+}
+
+/* Mantengo tus estilos previos de imagen */
 .imagen-taxonomia img {
   max-width: 100%;
   max-height: 400px;
@@ -105,13 +123,14 @@ $this->title = $taxonomia->tax_nombre_comun;
 }
 
 .descripcion {
+  flex: 1 1 280px;
   font-size: 1.05rem;
   color: #444;
   line-height: 1.6;
-  margin-top: 2rem;
   text-align: justify;
 }
 
+/* Breadcrumb y tarjetas de especie tal cual los tenías */
 .breadcrumb {
   background: #f1f3f5;
   padding: 0.75rem 1rem;
@@ -147,5 +166,21 @@ $this->title = $taxonomia->tax_nombre_comun;
 .especie-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+}
+
+/* 📱 Mobile: apilar imagen + descripción */
+@media (max-width: 768px) {
+  .taxonomia-layout {
+    flex-direction: column;
+  }
+
+  .imagen-taxonomia {
+    max-width: 100%;
+    flex: 1 1 auto;
+  }
+
+  .descripcion {
+    margin-top: 1rem;
+  }
 }
 </style>

@@ -14,7 +14,7 @@ $this->title = $especie->esp_nombre_cientifico;
       <span class="separator">/</span>
       <a href="<?= Yii::$app->request->baseUrl ?>/taxonomias">Grupos taxonómicos</a>
       <span class="separator">/</span>
-      <a href="<?= Yii::$app->request->baseUrl ?>/taxonomias/<?= $taxonomia->tax_slug ?>">
+      <a href="<?= Yii::$app->request->baseUrl ?>/taxonomias/<?= htmlspecialchars($taxonomia->tax_slug) ?>">
         <?= htmlspecialchars($taxonomia->tax_nombre_comun) ?>
       </a>
       <span class="separator">/</span>
@@ -23,18 +23,23 @@ $this->title = $especie->esp_nombre_cientifico;
 
     <h1 class="titulo-especie"><?= htmlspecialchars($especie->esp_nombre_cientifico) ?></h1>
     <p class="subtitulo-especie">
-      <strong>Nombre Común:</strong>
+      <strong>Nombre común:</strong>
       <span class="latin"><?= htmlspecialchars($especie->esp_nombre_comun) ?></span>
     </p>
 
-    <div class="imagen-especie mt-3 mb-4">
-      <img src="<?= htmlspecialchars($especie->esp_imagen) ?>"
-           alt="Imagen de <?= htmlspecialchars($especie->esp_nombre_comun) ?>"
-           class="img-fluid">
-    </div>
+    <!-- Layout imagen + descripción -->
+    <div class="especie-layout">
+      <div class="especie-imagen">
+        <img src="<?= htmlspecialchars($especie->esp_imagen) ?>"
+             alt="Imagen de <?= htmlspecialchars($especie->esp_nombre_comun) ?>"
+             class="img-fluid">
+      </div>
 
-    <div class="descripcion mt-4">
-      <?= $especie->esp_descripcion ?>
+      <div class="especie-texto">
+        <div class="descripcion">
+          <?= $especie->esp_descripcion ?>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -46,6 +51,7 @@ $this->title = $especie->esp_nombre_cientifico;
   font-family: 'Nunito Sans', sans-serif;
 }
 
+/* Título y subtítulo */
 .titulo-especie {
   font-size: 2.3rem;
   font-weight: bold;
@@ -64,24 +70,33 @@ $this->title = $especie->esp_nombre_cientifico;
   color: #444;
 }
 
-.imagen-especie img {
-  max-width: 100%;
-  max-height: 500px;
+/* Layout principal: imagen izquierda, texto derecha en desktop */
+.especie-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+/* Imagen */
+.especie-imagen img {
+  width: 100%;
+  max-height: 420px;
   object-fit: cover;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   display: block;
-  margin: 0 auto;
 }
 
-.descripcion {
+/* Texto / descripción */
+.especie-texto .descripcion {
   font-size: 1.05rem;
   color: #444;
-  line-height: 1.6;
+  line-height: 1.7;
   text-align: justify;
-  margin-top: 2rem;
 }
 
+/* Breadcrumb (mismo estilo que taxonomías) */
 .breadcrumb {
   background: #f1f3f5;
   padding: 0.75rem 1rem;
@@ -112,5 +127,20 @@ $this->title = $especie->esp_nombre_cientifico;
 .breadcrumb-current {
   font-weight: bold;
   color: #2b2b2b;
+}
+
+/* Responsive: en móviles se apila */
+@media (max-width: 768px) {
+  .especie-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .especie-imagen img {
+    max-height: 320px;
+  }
+
+  .titulo-especie {
+    font-size: 2rem;
+  }
 }
 </style>

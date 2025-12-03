@@ -71,7 +71,6 @@ class DeteccionController extends Controller
         return $host . '/sitio/web/taxonomias/' . $taxSlug . '/' . $espSlug;
     }
 
-    
     // ─────────────────────────────────────────────
     // REGISTRAR
     // ─────────────────────────────────────────────
@@ -91,8 +90,6 @@ class DeteccionController extends Controller
             $tx = $db->beginTransaction();
 
             // 1. Campos base
-            // Guardamos exactamente los mismos nombres que tuviste antes,
-            // con los mismos redondeos/casts.
             $det->det_confianza_router   = isset($body['det_confianza_router'])  ? round((float)$body['det_confianza_router'],  6) : null;
             $det->det_confianza_experto  = isset($body['det_confianza_experto']) ? round((float)$body['det_confianza_experto'], 6) : null;
             $det->det_tiempo_router_ms   = isset($body['det_tiempo_router_ms'])  ? (int)$body['det_tiempo_router_ms']  : null;
@@ -125,7 +122,7 @@ class DeteccionController extends Controller
             $det->created_at             = date('Y-m-d H:i:s');
             $det->updated_at             = date('Y-m-d H:i:s');
 
-            // 2. Taxonomía / Especie (misma resolución que ya tenías)
+            // 2. Taxonomía / Especie
             $taxId = $body['det_tax_id'] ?? null;
             if (!$taxId && !empty($body['taxon_predicted'])) {
                 $taxSlug = LibreriaHelper::generateSlug(trim((string)$body['taxon_predicted']));
@@ -157,7 +154,7 @@ class DeteccionController extends Controller
             $det->det_tax_id = $taxId;
             $det->det_esp_id = $espId;
 
-            // 3. Modelos IA (router / experto), manteniendo tu patrón
+            // 3. Modelos IA (router / experto)
             if (!empty($body['router_model'])) {
                 $m = Modelo::findOne([
                         'mod_nombre' => $body['router_model'],
@@ -201,57 +198,37 @@ class DeteccionController extends Controller
             }
 
             // 5. Subir imagen
-            // En tu versión original, tú hacías todo a mano (UploadedFile::getInstanceByName(...),
-            // mkdir, borrado, resize jpeg, set det_imagen, det_origen_archivo, etc.)
-            //
-            // Lo vamos a mantener, pero usando parte del helper para la conversión HEIC->JPG
-            // y para estandarizar el nombre final {id}.{ext}.
-            //
-            // Truco: montamos un objeto "falso" compatible con subirFoto:
-            // necesitamos que el campo se llame 'imagen' en el FormData (ya lo tienes).
-            // 5. Subir imagen
-
             $archivo = UploadedFile::getInstanceByName('imagen');
             if ($archivo) {
-
-                // Guardar archivo en disco (conversión HEIC->JPG si aplica)
-                // Nota: el campo real en tu tabla es det_imagen
                 $rutaDB = \app\helpers\LibreriaHelper::subirFoto(
                     $det,
-                    'det_imagen',        // este es el atributo REAL del modelo Deteccion
-                    'detecciones',       // subcarpeta en recursos/uploads
-                    $archivo             // le pasamos el UploadedFile explícitamente
+                    'det_imagen',
+                    'detecciones',
+                    $archivo
                 );
 
                 if ($rutaDB) {
-                    // Guardar metadata en la fila
                     $det->det_imagen         = $rutaDB;
                     $det->det_origen_archivo = $archivo->name ?? null;
 
-                    // Resize suave si quedó en jpg/jpeg
                     $partes   = explode('.', $rutaDB);
                     $extFinal = strtolower(end($partes));
                     if (in_array($extFinal, ['jpg','jpeg'], true)) {
-
-                        // Ruta absoluta al archivo recién guardado
-                        $webroot = rtrim(Yii::getAlias('@webroot'), '/'); // /home/.../panel-admin/web
-                        $dirFs   = $webroot . '/../../recursos/uploads/'; // /home/.../recursos/uploads/
-                        $absPath = $dirFs . $rutaDB;                      // .../recursos/uploads/detecciones/{id}.jpg
+                        $webroot = rtrim(Yii::getAlias('@webroot'), '/');
+                        $dirFs   = $webroot . '/../../recursos/uploads/';
+                        $absPath = $dirFs . $rutaDB;
 
                         if (is_file($absPath)) {
-                            // redimensionar a ancho máximo 1600px
                             self::smartResizeJpeg($absPath);
                         }
                     }
 
-                    // persistimos cambios en la fila detecciones ahora que ya tenemos ruta
                     $det->save(false);
                 }
             }
 
             $tx->commit();
 
-            // preparar respuesta
             $imagenPublica = $this->buildUploadUrl($det->det_imagen);
 
             // generar link a la ficha especie
@@ -288,16 +265,12 @@ class DeteccionController extends Controller
 
     private static function smartResizeJpeg(string $absPath): void
     {
-        // LibreriaHelper::resizeImage($ruta, $nombre, $maxWidth, $maxHeight)
-        // OJO: en tu helper, resizeImage ignora $ruta y usa $nombre directamente,
-        // pero igual se la pasamos prolija.
         $dir  = dirname($absPath) . '/';
         $file = $absPath;
         \app\helpers\LibreriaHelper::resizeImage($dir, $file, 1600, null);
     }
 
-    // LISTAR y DETALLE los dejamos tal como los tenías antes.
-    // No los repito aquí para no inventarte cambios no solicitados. // ─────────────────────────────────────────────
+    // ─────────────────────────────────────────────
     // DETALLE
     // ─────────────────────────────────────────────
     public function actionDetalle($id)
@@ -307,7 +280,7 @@ class DeteccionController extends Controller
             return ['success' => false, 'message' => "No se encontró la detección #$id"];
         }
 
-        $especie = $det->det_esp_id ? Especie::findOne($det->det_esp_id) : null;
+        $especie   = $det->det_esp_id ? Especie::findOne($det->det_esp_id) : null;
         $taxonomia = null;
         if ($especie && ($especie->esp_tax_id ?? null)) {
             $taxonomia = Taxonomia::findOne($especie->esp_tax_id);
@@ -332,6 +305,18 @@ class DeteccionController extends Controller
                     'usuario' => $obs->obs_usuario,
                     'correo'  => $obs->obs_email ?? null,
                 ];
+            }
+        }
+
+        // URL ficha especie (si tenemos slug de especie + taxonomía)
+        $fichaUrl = null;
+        if ($especie && $especie->esp_slug) {
+            $tax = $taxonomia;
+            if (!$tax && ($especie->esp_tax_id ?? null)) {
+                $tax = Taxonomia::findOne($especie->esp_tax_id);
+            }
+            if ($tax && $tax->tax_slug) {
+                $fichaUrl = $this->buildFichaUrl($tax->tax_slug, $especie->esp_slug);
             }
         }
 
@@ -361,6 +346,7 @@ class DeteccionController extends Controller
                 'nombre_cientifico' => $especie->esp_nombre_cientifico,
                 'nombre_comun'      => $especie->esp_nombre_comun,
                 'descripcion'       => $especie->esp_descripcion,
+                'slug'              => $especie->esp_slug,
                 'imagen'            => $especie->esp_imagen
                     ? $this->buildUploadUrl($especie->esp_imagen)
                     : null,
@@ -375,6 +361,9 @@ class DeteccionController extends Controller
 
             // 👤 Observador
             'observador' => $observador,
+
+            // 🔗 URL directa a la ficha de especie (si existe)
+            'url_especie' => $fichaUrl,
         ];
     }
 
@@ -399,7 +388,7 @@ class DeteccionController extends Controller
         // Query principal: detecciones con posibles relaciones
         $q = Deteccion::find()
             ->orderBy(['det_id' => SORT_DESC])
-            ->with(['especie.taxonomia']); // mantiene las relaciones sin excluir nulos
+            ->with(['especie.taxonomia']);
 
         // Determinar columna de observador según estructura
         $probe = new Deteccion();
@@ -420,14 +409,12 @@ class DeteccionController extends Controller
             $esp = $d->especie ?? null;
             $tax = ($esp && method_exists($esp, 'getTaxonomia')) ? $esp->taxonomia : null;
 
-            // Fallbacks cuando no hay especie
             $nombreCientifico = $esp->esp_nombre_cientifico
                 ?? $d->taxon_predicted
                 ?? 'No definida';
             $nombreComun = $esp->esp_nombre_comun ?? 'Sin nombre común';
             $slugEspecie = $esp->esp_slug ?? null;
 
-            // Ficha solo si existen slugs válidos
             $urlFicha = ($tax && $tax->tax_slug && $slugEspecie)
                 ? $this->buildFichaUrl($tax->tax_slug, $slugEspecie)
                 : null;
@@ -441,15 +428,12 @@ class DeteccionController extends Controller
                 'confianza_experto' => $d->det_confianza_experto,
                 'ubicacion'         => $d->det_ubicacion_textual,
 
-                // Imagen subida por el usuario
                 'imagen_deteccion'  => $this->buildUploadUrl($d->det_imagen),
 
-                // Imagen referencial de la especie (si existe)
                 'imagen_especie'    => ($esp && $esp->esp_imagen)
                     ? $this->buildUploadUrl($esp->esp_imagen)
                     : null,
 
-                // Bloque especie (o fallback)
                 'especie' => [
                     'id'                 => $esp->esp_id ?? null,
                     'nombre_cientifico'  => $nombreCientifico,

@@ -1,0 +1,28 @@
+# Habilitar mod_rewrite
+RewriteEngine On
+
+########################################
+# 1) Forzar dominio canónico (opcional)
+#    Elige si quieres con o sin "www".
+#    Este ejemplo fuerza SIEMPRE a www.ecolens.site
+########################################
+RewriteCond %{HTTP_HOST} ^ecolens\.site$ [NC]
+RewriteRule ^(.*)$ https://www.ecolens.site/$1 [L,R=301]
+
+########################################
+# 2) Redirigir raíz y /inicio al frontend Yii2
+########################################
+
+# /  →  /sitio/web/inicio
+RewriteRule ^$ sitio/web/inicio [L,R=301]
+
+# /inicio  →  /sitio/web/inicio
+RewriteRule ^inicio/?$ sitio/web/inicio [L,R=301]
+
+########################################
+# 3) Dejar que Yii2 maneje el resto de URLs
+#    (sin romper /panel-admin ni /recursos)
+########################################
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ sitio/web/index.php [L]

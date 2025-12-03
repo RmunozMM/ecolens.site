@@ -35,7 +35,8 @@ $API_REG     = $env['endpoints']['registrar'] ?? ($API_BASE . '/api/deteccion/re
 
   <div class="upload-form">
     <div class="upload-box" role="button" tabindex="0"
-         onclick="document.getElementById('image-upload').click()"
+         onclick="document.getElementById('image-upload').click()
+         "
          onkeypress="if(event.key==='Enter'||event.key===' '){document.getElementById('image-upload').click();}">
       <span class="upload-icon">📸</span>
       <p>Haz clic para subir una imagen</p>
@@ -44,7 +45,7 @@ $API_REG     = $env['endpoints']['registrar'] ?? ($API_BASE . '/api/deteccion/re
     </div>
 
     <div id="image-preview" class="image-preview">
-      <h3>Vista Previa:</h3>
+      <h3>Vista Previa</h3>
       <img id="preview-image" src="" alt="Vista previa de la imagen a detectar" />
     </div>
 
@@ -191,31 +192,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
       resultBox.innerHTML = `
         <div class="result-card">
-          <h3>🔍 Resultado del Análisis</h3>
+          <h3>🔍 Resultado del análisis</h3>
 
-          <p><strong>Taxón:</strong> ${taxonName} (${taxonConfPct}%)</p>
-          <div class="confidence-bar"><div class="confidence-fill" style="width:${taxonConfPct}%"></div></div>
+          <p class="result-taxon">
+            <span class="result-label">Taxón:</span>
+            <span class="result-value">${taxonName}</span>
+            <span class="result-confidence">(${taxonConfPct}%)</span>
+          </p>
+          <div class="confidence-bar">
+            <div class="confidence-fill" style="width:${taxonConfPct}%"></div>
+          </div>
 
           ${
             speciesDisplayName
             ? `
-              <p>
-                <strong>Especie ${esConcluyente ? "" : "probable"}:</strong>
-                ${speciesDisplayName} (${speciesConfPct}%)
+              <p class="result-species">
+                <span class="result-label">Especie ${esConcluyente ? "" : "probable"}:</span>
+                <span class="result-value">${speciesDisplayName}</span>
+                <span class="result-confidence">(${speciesConfPct}%)
+                </span>
               </p>
               <div class="confidence-bar">
                 <div class="confidence-fill" style="width:${speciesConfPct}%"></div>
               </div>
               ${
                 !esConcluyente
-                  ? `<p style="font-size:0.85rem;color:#b45309;margin-top:.35rem;">
+                  ? `<p class="low-confidence-hint">
                        ⚠ Resultado de baja confianza. Interprétalo como sugerencia, no como identificación confirmada.
                      </p>`
                   : ""
               }
               ${
                 expertMinPct
-                  ? `<p style="font-size:0.8rem;color:#6b7280;margin-top:.15rem;">
+                  ? `<p class="expert-threshold">
                        Umbral del modelo experto: ${expertMinPct} %
                      </p>`
                   : ""
@@ -224,16 +233,17 @@ document.addEventListener("DOMContentLoaded", () => {
             : ""
           }
 
-          <p style="color:#6b7280;font-size:0.9rem;margin-top:.35rem">
+          <p class="inference-times">
             ⏱ Router: ${msRouterUI ?? "–"} ms
             ${msExpertUI !== null ? `&nbsp;|&nbsp; ⏱ Experto: ${msExpertUI} ms` : ""}
           </p>
 
-          <hr style="margin:1rem 0;opacity:0.3;">
+          <hr class="result-divider">
 
-          <p><strong>Ubicación:</strong><br>${locationName}</p>
-          <p style="font-size:0.9rem;color:#555;">(${lat || "?"}, ${lon || "?"})</p>
-          <div id="map-container" style="height:250px;margin-top:1rem;border-radius:10px;overflow:hidden;"></div>
+          <p class="location-title"><strong>Ubicación:</strong></p>
+          <p class="location-text">${locationName}</p>
+          <p class="location-coords">(${lat || "?"}, ${lon || "?"})</p>
+          <div id="map-container"></div>
         </div>`;
 
       if (lat && lon) {
@@ -286,7 +296,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!apiData.success) {
         resultBox.innerHTML += `<div class="result-error">🚫 Error guardando la detección:<br>${apiData.message || "Error desconocido."}</div>`;
       } else {
-        resultBox.innerHTML += `<p style="margin-top:1rem;color:green;font-weight:600;">✅ Detección registrada con ID #${apiData.id}</p>`;
+        resultBox.innerHTML += `<p class="result-success">✅ Detección registrada con ID #${apiData.id}</p>`;
       }
 
       // === 5) Redirigir / sugerir ficha de la especie basada en speciesDisplayName (no en BD) ===
@@ -304,17 +314,17 @@ document.addEventListener("DOMContentLoaded", () => {
             const fichaBase = API.MIS_DET.replace('/mis-detecciones','/taxonomias/');
             const fichaUrl  = `${fichaBase}${slugJson.taxSlug}/${slugJson.slug}`;
             resultBox.innerHTML += `
-              <p style="margin-top:1rem;">
-                <a href="${fichaUrl}" class="mini-link" style="color:#173b35;font-weight:600;text-decoration:none;">
+              <p class="species-link-wrapper">
+                <a href="${fichaUrl}" class="mini-link">
                   🔗 Ver ficha de ${speciesDisplayName}
                 </a>
               </p>`;
           } else {
-            resultBox.innerHTML += `<p style="margin-top:1rem;color:#555;">ℹ️ No se encontró la ficha de esta especie.</p>`;
+            resultBox.innerHTML += `<p class="species-link-fallback">ℹ️ No se encontró la ficha de esta especie.</p>`;
           }
         } catch (err) {
           console.warn("Error obteniendo slug:", err);
-          resultBox.innerHTML += `<p style="margin-top:1rem;color:#555;">⚠️ No se pudo cargar la ficha de la especie.</p>`;
+          resultBox.innerHTML += `<p class="species-link-fallback">⚠️ No se pudo cargar la ficha de la especie.</p>`;
         }
       }
 
@@ -330,29 +340,389 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 <style>
-.image-preview { display:none; margin-top:1rem; margin-bottom:1rem; text-align:center; }
-.image-preview img { max-width:100%; height:auto; max-height:520px; object-fit:contain; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,.12); }
-#result-box { margin-top:1.5rem; text-align:center; }
-.result-card { display:inline-block; background:#fff; border:1px solid #ddd; border-radius:12px; padding:1.5rem 2rem; box-shadow:0 4px 12px rgba(0,0,0,0.1); text-align:center; font-family:"Nunito Sans",sans-serif; animation:fadeIn 0.4s ease; max-width:520px; }
-.result-card h3 { color:#1f2937; margin-bottom:0.8rem; }
-.confidence-bar { width:100%; background:#eee; height:12px; border-radius:6px; overflow:hidden; margin:0.5rem 0 0.8rem; }
-.confidence-fill { height:100%; background:linear-gradient(90deg,#3b82f6,#22c55e); transition:width 0.6s ease; }
-.result-error { color:#b91c1c; background:#fee2e2; border:1px solid #fca5a5; padding:1rem; border-radius:8px; }
-.cta-button[disabled]{ pointer-events:none; opacity:.5; }
+/* Layout general de la sección */
+.upload-section {
+  padding: 2.5rem 1.25rem 3rem;
+  text-align: center;
+}
 
-.upload-box{ border:2px dashed #d1d5db; border-radius:12px; padding:1.5rem; text-align:center; cursor:pointer; transition:background .2s ease,border-color .2s ease; }
-.upload-box:hover{ background:#f9fafb; border-color:#9ca3af; }
-.upload-icon{ font-size:2rem; display:block; margin-bottom:.25rem; }
-.file-input{ display:none; }
-.mini-link{ font-size:.95rem; padding:.5rem .85rem; }
+.upload-section h1 {
+  font-family: "Lora", "Georgia", serif;
+  font-size: clamp(1.8rem, 2.3vw, 2.3rem);
+  margin-bottom: 0.6rem;
+  color: #173b35;
+}
 
-/* Ocultar botón y bloquear interacción */
-.is-hidden { display:none !important; visibility:hidden !important; pointer-events:none !important; }
-body.busy { cursor:wait !important; }
-body.busy * { pointer-events:none !important; user-select:none !important; }
+.upload-section > p {
+  margin: 0 auto 1.5rem;
+  max-width: 640px;
+  font-size: 0.98rem;
+  color: #4b5563;
+}
+
+.upload-form {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Caja de subida */
+.upload-box {
+  border: 2px dashed #cbd5f5;
+  border-radius: 16px;
+  padding: 1.75rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  background: radial-gradient(circle at top left, rgba(23, 59, 53, 0.06), transparent),
+              rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.07);
+}
+
+.upload-box:hover,
+.upload-box:focus-within {
+  border-color: #45ad82;
+  background: radial-gradient(circle at top left, rgba(69, 173, 130, 0.18), transparent),
+              rgba(255, 255, 255, 0.95);
+  box-shadow: 0 18px 55px rgba(15, 23, 42, 0.16);
+  transform: translateY(-2px);
+}
+
+.upload-icon {
+  font-size: 2.4rem;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.upload-box p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.file-name {
+  margin-top: 0.6rem;
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-style: italic;
+  word-break: break-all;
+}
+
+.file-input {
+  display: none;
+}
+
+/* Vista previa */
+.image-preview {
+  display: none;
+  margin-top: 0.25rem;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.image-preview h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: #111827;
+}
+
+.image-preview img {
+  max-width: 100%;
+  height: auto;
+  max-height: 520px;
+  object-fit: contain;
+  border-radius: 16px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.25);
+}
+
+/* Botón principal */
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.7rem 1.6rem;
+  border-radius: 999px;
+  border: none;
+  text-decoration: none;
+  font-size: 0.98rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #173b35, #45ad82);
+  color: #f9fafb;
+  box-shadow: 0 12px 30px rgba(23, 59, 53, 0.4);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.cta-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 40px rgba(23, 59, 53, 0.55);
+  background: linear-gradient(135deg, #145046, #45ad82);
+}
+
+.cta-button:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 20px rgba(23, 59, 53, 0.35);
+}
+
+.cta-button[disabled] {
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+/* Resultado */
+#result-box {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.result-card {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(209, 213, 219, 0.8);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 20px 55px rgba(15, 23, 42, 0.25);
+  text-align: left;
+  font-family: "Nunito Sans", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  animation: fadeIn 0.35s ease-out;
+  max-width: 560px;
+  width: 100%;
+}
+
+.result-card h3 {
+  color: #111827;
+  margin-bottom: 0.8rem;
+  font-size: 1.15rem;
+}
+
+/* Filas de resultado */
+.result-taxon,
+.result-species {
+  margin: 0.4rem 0 0.1rem;
+  font-size: 0.96rem;
+  color: #111827;
+}
+
+.result-label {
+  font-weight: 600;
+  color: #111827;
+}
+
+.result-value {
+  margin-left: 0.25rem;
+  font-weight: 500;
+}
+
+.result-confidence {
+  margin-left: 0.25rem;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+/* Barras de confianza */
+.confidence-bar {
+  width: 100%;
+  background: #e5e7eb;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 0.35rem 0 0.7rem;
+}
+
+.confidence-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #45ad82, #8bd6b0);
+  transition: width 0.6s ease;
+}
+
+/* Mensajes extra */
+.low-confidence-hint {
+  font-size: 0.83rem;
+  color: #b45309;
+  margin-top: 0.2rem;
+}
+
+.expert-threshold {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 0.1rem;
+}
+
+.inference-times {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-top: 0.4rem;
+}
+
+/* Separador */
+.result-divider {
+  margin: 1rem 0;
+  opacity: 0.25;
+  border: none;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Ubicación y mapa */
+.location-title {
+  margin-bottom: 0.15rem;
+}
+
+.location-text {
+  margin: 0;
+  font-size: 0.92rem;
+  color: #374151;
+}
+
+.location-coords {
+  margin: 0.1rem 0 0.6rem;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+#map-container {
+  height: 250px;
+  margin-top: 0.25rem;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(209, 213, 219, 0.9);
+}
+
+/* Estados de API */
+.result-error {
+  color: #991b1b;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  margin-top: 0.9rem;
+  text-align: left;
+}
+
+.result-success {
+  margin-top: 1rem;
+  color: #166534;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Enlace a ficha */
+.mini-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  color: #173b35;
+  background: rgba(23, 59, 53, 0.05);
+  border: 1px solid rgba(23, 59, 53, 0.15);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.mini-link:hover {
+  background: rgba(23, 59, 53, 0.1);
+  border-color: rgba(23, 59, 53, 0.35);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
+  transform: translateY(-1px);
+}
+
+.species-link-wrapper {
+  margin-top: 1rem;
+}
+
+.species-link-fallback {
+  margin-top: 1rem;
+  font-size: 0.86rem;
+  color: #4b5563;
+}
+
+/* Ocultar botón y bloquear interacción durante procesamiento */
+.is-hidden {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body.busy {
+  cursor: wait !important;
+}
+
+body.busy * {
+  pointer-events: none !important;
+  user-select: none !important;
+}
 
 /* Spinner */
-#loading-spinner { display:flex; flex-direction:column; align-items:center; justify-content:center; margin-top:2rem; color:#374151; font-family:"Nunito Sans",sans-serif; text-align:center; }
-.spinner { border:4px solid #e5e7eb; border-top:4px solid #45AD82; border-radius:50%; width:48px; height:48px; animation:spin 1s linear infinite; margin-bottom:0.8rem; }
-@keyframes spin { 0%{transform:rotate(0deg);}100%{transform:rotate(360deg);} }
+#loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+  color: #374151;
+  font-family: "Nunito Sans", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  text-align: center;
+}
+
+.spinner {
+  border: 4px solid #e5e7eb;
+  border-top: 4px solid #45ad82;
+  border-radius: 50%;
+  width: 46px;
+  height: 46px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 0.8rem;
+}
+
+/* Animaciones */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsivo */
+@media (max-width: 640px) {
+  .upload-section {
+    padding-top: 2rem;
+  }
+
+  .result-card {
+    padding: 1.25rem 1.1rem 1.4rem;
+    border-radius: 14px;
+  }
+
+  #map-container {
+    height: 200px;
+  }
+}
 </style>

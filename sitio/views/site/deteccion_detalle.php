@@ -11,7 +11,6 @@ $this->title = "Detalle de Detección #{$id}";
   <div id="det-error" style="display:none;color:#b91c1c;margin-top:1rem;"></div>
 </section>
 
-<!-- Leaflet (solo una vez) -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -30,7 +29,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const cont = document.getElementById("det-content");
   const err  = document.getElementById("det-error");
 
-  // Helpers de formato
   const txt = v => (v && String(v).trim().length) ? String(v) : "No registrado";
   const txtUbic = v => (v && String(v).trim().length) ? String(v) : "No especificada";
 
@@ -52,7 +50,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const hasCoords = (lat, lng) => Number.isFinite(+lat) && Number.isFinite(+lng);
 
-  // Toma el primer campo definido (no null/undefined)
   const pickField = (obj, ...names) => {
     for (const n of names) {
       if (obj && obj[n] !== undefined && obj[n] !== null) {
@@ -62,7 +59,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     return null;
   };
 
-  // Convierte a porcentaje si es número válido, si no "No disponible"
   const toPercent = (val) => {
     const num = Number(val);
     if (!Number.isFinite(num)) return "No disponible";
@@ -73,9 +69,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const r = await fetch(API_URL, { credentials: "include" });
     const raw = await r.json();
 
-    // Soporte para:
-    // 1) { success: true, data: { ... } }
-    // 2) { ...objetoDeteccionPlano... }
     const success = (raw && typeof raw === "object" && "success" in raw)
       ? !!raw.success
       : true;
@@ -91,22 +84,32 @@ document.addEventListener("DOMContentLoaded", async () => {
       ? raw.data
       : raw;
 
-    const e = d.especie   || {};
-    const t = d.taxonomia || {};
+    const e = d.especie    || {};
+    const t = d.taxonomia  || {};
     const o = d.observador || {};
     const imgDeteccion = d.imagen_deteccion || "";
     const imgEspecie   = d.imagen_especie || e.imagen || "";
 
-    // DEBUG mínimo por si algo sigue raro:
-    console.log("DETALLE DETECCION", {
-      id: DET_ID,
-      det_confianza_router: d.det_confianza_router,
-      det_confianza_experto: d.det_confianza_experto,
-      conf_router: d.conf_router,
-      conf_experto: d.conf_experto
-    });
+    console.log("DETALLE DETECCION", d);
 
-    // Encabezado con ID + copiar enlace
+    const especieDisplayName =
+      e.nombre_comun || e.nombre_cientifico || "Especie desconocida";
+
+    const especieUrl =
+      d.url_especie
+      || ((t && t.slug && e && e.slug)
+            ? `https://ecolens.site/sitio/web/taxonomias/${t.slug}/${e.slug}`
+            : null);
+
+    const especieLinkHtml =
+      especieUrl && especieDisplayName
+        ? `<p class="img-label-sec">
+             <a href="${especieUrl}" rel="noopener" class="especie-link">
+               Ver ficha de ${especieDisplayName}
+             </a>
+           </p>`
+        : "";
+
     meta.innerHTML = `
       <div class="meta-row">
         <div class="meta-left">
@@ -125,20 +128,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       navigator.clipboard?.writeText(url).catch(() => {});
     });
 
-    // Grupo taxonómico (link si hay slug)
     const grupoLabel = t?.nombre ? t.nombre : "No registrado";
     const grupoHtml = (t?.slug && t?.nombre)
-      ? `<a href="https://ecolens.site/sitio/web/taxonomias/${t.slug}" target="_blank" rel="noopener">${t.nombre}</a>`
+      ? `<a href="https://ecolens.site/sitio/web/taxonomias/${t.slug}" rel="noopener">${t.nombre}</a>`
       : grupoLabel;
 
-    // ==========================
-    //   CONFIDENCIAS DE MODELO
-    // ==========================
+    const confRouter  = toPercent(pickField(d, "conf_router", "det_confianza_router"));
+    const confExperto = toPercent(pickField(d, "conf_experto", "det_confianza_experto"));
 
-    const confRouter = toPercent(pickField(d, "det_confianza_router", "conf_router"));
-    const confExperto = toPercent(pickField(d, "det_confianza_experto", "conf_experto"));
-
-    // Bloque de contenido
     cont.innerHTML = `
       <div class="detalle-wrapper">
         <div class="detalle-imagenes">
@@ -161,6 +158,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               ? `
                 <div class="img-box">
                   <p class="img-label">🧬 Referencia de especie</p>
+                  ${especieLinkHtml}
                   <img src="${imgEspecie}" alt="Referencia de especie">
                 </div>`
               : ""
@@ -168,7 +166,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>
 
         <div class="detalle-info">
-          <h2>${e.nombre_comun || e.nombre_cientifico || "Especie desconocida"}</h2>
+          <h2>${especieDisplayName}</h2>
 
           <p class="taxon"><strong>Grupo taxonómico:</strong> ${grupoHtml}</p>
           <p><strong>Fecha:</strong> ${safeDate(d.fecha)}</p>
@@ -197,7 +195,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       <a href="../../mis-detecciones" class="btn-volver">← Volver</a>
     `;
 
-    // Mapa si hay coordenadas
     if (hasCoords(d.latitud, d.longitud)) {
       const map = L.map('mapa').setView([+d.latitud, +d.longitud], 14);
 
@@ -207,7 +204,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       L.marker([+d.latitud, +d.longitud]).addTo(map)
         .bindPopup(
-          `<strong>${e.nombre_comun || e.nombre_cientifico || 'Especie detectada'}</strong><br>${txtUbic(d.ubicacion)}`
+          `<strong>${especieDisplayName}</strong><br>${txtUbic(d.ubicacion)}`
         );
     }
 
@@ -223,6 +220,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 .detalle-deteccion {
   padding: 2rem 1rem;
   font-family: "Nunito Sans", sans-serif;
+}
+
+.detalle-deteccion h1 {
+  font-family: "Lora", "Georgia", serif;
+  font-size: clamp(1.6rem, 2vw, 2rem);
+  color: #173b35;
+  margin-bottom: 0.75rem;
 }
 
 .detalle-wrapper {
@@ -252,9 +256,39 @@ document.addEventListener("DOMContentLoaded", async () => {
 }
 
 .img-label {
-  margin-bottom: .5rem;
+  margin-bottom: .25rem;
   font-weight: 600;
   color: #374151;
+}
+
+.img-label-sec {
+  margin: 0 0 .5rem;
+}
+
+.especie-link {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: #173b35;
+  background: rgba(23, 59, 53, 0.05);
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(23, 59, 53, 0.18);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.especie-link:hover {
+  background: rgba(23, 59, 53, 0.1);
+  border-color: rgba(23, 59, 53, 0.4);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
+  transform: translateY(-1px);
 }
 
 .detalle-info {
@@ -265,6 +299,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 .detalle-info h2 {
   margin-top: 0;
   color: #1f2937;
+  font-size: 1.3rem;
 }
 
 .detalle-info .taxon {
@@ -304,6 +339,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   color: #fff;
   border-radius: 8px;
   text-decoration: none;
+  font-size: 0.95rem;
 }
 
 .btn-volver:hover {
@@ -339,6 +375,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   padding:.25rem .5rem;
   border-radius:.5rem;
   font-weight:700;
+  font-size: 0.9rem;
 }
 
 .btn-copy {
@@ -347,6 +384,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   border-radius:.5rem;
   background:#fff;
   cursor:pointer;
+  font-size: 0.85rem;
 }
 
 .btn-copy:hover {
@@ -370,5 +408,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 .hint-muted {
   margin-top:1rem;
   color:#64748b;
+  font-size: 0.9rem;
 }
 </style>

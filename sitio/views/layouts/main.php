@@ -36,72 +36,118 @@ if (empty($contenido) || !property_exists($contenido, 'paginas')) {
     $contenido = $this->params['contenido'] ?? (object)[];
 }
 
-// $contenido->media podría no existir (por ejemplo, si la página no lo usa)
+// $contenido->media podría no existir
 $media = isset($contenido->media) ? (object)$contenido->media : (object)[];
 
-// 🔒  Fallback adicional en layout (por si el controlador no corta)
+// 🔒 Fallback adicional en layout
 if (isset($contenido->pagina_offline) && is_object($contenido->pagina_offline)) {
     $po = $contenido->pagina_offline;
-
     $htmlOffline = $po->pag_contenido_programador
         ?? (($po->pag_contenido_antes ?? '') . ($po->pag_contenido_despues ?? ''));
-
     echo $htmlOffline;
     return;
 }
 ?>
 <!DOCTYPE html>
 <html lang="<?= Html::encode($opciones->idioma_sitio) ?>">
+
 <head>
     <meta charset="UTF-8">
     <?php
-        // Determina título de la página (si está disponible desde $this->title o desde contenido)
+        // --- 1. TÍTULO Y DESCRIPCIÓN ---
         $pageTitle = trim($this->title ?? '');
         $siteName  = $opciones->site_name ?? Yii::$app->name;
+        $fullTitle = ($pageTitle === '' || strcasecmp($pageTitle, $siteName) === 0)
+            ? $siteName
+            : "$siteName | $pageTitle";
 
-        // Si no hay título definido, usa solo el nombre del sitio
-        if ($pageTitle === '' || strcasecmp($pageTitle, $siteName) === 0) {
-            $fullTitle = $siteName;
-        } else {
-            // Genera formato "EcoLens | Inicio"
-            $fullTitle = "{$siteName} | {$pageTitle}";
+        $metaDescription = trim($opciones->meta_description ?? '');
+        if ($metaDescription === '' && isset($contenido->resumen)) {
+            $metaDescription = strip_tags((string)$contenido->resumen);
+            if (mb_strlen($metaDescription) > 200) {
+                $metaDescription = mb_substr($metaDescription, 0, 197) . '…';
+            }
         }
+
+        // --- 2. URL CANÓNICA / ABSOLUTA ---
+        // Usa siempre URL absoluta real (incluido /sitio/web/...)
+        $canonicalUrl = Yii::$app->request->absoluteUrl;
+
+        // --- 3. IMAGEN OG ---
+        // Default: banner del tema
+        // Ruta: /sitio/web/themes/<theme>/assets/img/og-default.png
+        $defaultOgImage = Url::to("@web/themes/$theme/assets/img/og-default.jpeg", true);
+
+        $finalOgImage = $defaultOgImage;
+
+        // Si página define una imagen OG específica, la usamos
+        if (isset($media->og_image) && $media->og_image) {
+            $img = trim($media->og_image);
+
+            if (strpos($img, 'http://') === 0 || strpos($img, 'https://') === 0) {
+                // Ya viene absoluta
+                $finalOgImage = $img;
+            } else {
+                // Ruta relativa del tipo "recursos/..." o "/recursos/..."
+                $imgPath = '/' . ltrim($img, '/');
+                $finalOgImage = Url::to($imgPath, true);
+            }
+        }
+
+        // --- 4. MIME DE LA IMAGEN ---
+        $ext    = strtolower(pathinfo(parse_url($finalOgImage, PHP_URL_PATH), PATHINFO_EXTENSION));
+        $ogMime = ($ext === 'png') ? 'image/png' : 'image/jpeg';
+
+        // (Opcional) fb:app_id desde params, si algún día lo defines
+        $fbAppId = Yii::$app->params['fbAppId'] ?? null;
     ?>
+
     <title><?= Html::encode($fullTitle) ?></title>
-
-    <meta name="author" content="<?= Html::encode($opciones->meta_author) ?>">
-    <meta name="description" content="<?= Html::encode($opciones->meta_description) ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="<?= Html::encode($metaDescription) ?>">
+    <meta name="author" content="<?= Html::encode($opciones->meta_author) ?>">
 
-    <!-- Colores del tema -->
-    <meta name="theme-color" content="#45AD82" />
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="<?= Html::encode($siteName) ?>">
+    <meta property="og:url" content="<?= Html::encode($canonicalUrl) ?>">
+    <meta property="og:title" content="<?= Html::encode($fullTitle) ?>">
+    <meta property="og:description" content="<?= Html::encode($metaDescription) ?>">
+    <meta property="og:image" content="<?= Html::encode($finalOgImage) ?>">
+    <meta property="og:image:secure_url" content="<?= Html::encode($finalOgImage) ?>">
+    <meta property="og:image:type" content="<?= $ogMime ?>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <?php if ($fbAppId): ?>
+        <meta property="fb:app_id" content="<?= Html::encode($fbAppId) ?>">
+    <?php endif; ?>
 
-    <!-- Fuentes -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&family=Lora:wght@700&display=swap" rel="stylesheet">
+    <!-- Schema.org / Twitter -->
+    <meta itemprop="name" content="<?= Html::encode($fullTitle) ?>">
+    <meta itemprop="image" content="<?= Html::encode($finalOgImage) ?>">
 
-    <!-- CSS principal -->
-    <link rel="stylesheet" href="<?= "$base/themes/$theme/assets/css/main.css" ?>">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?= Html::encode($fullTitle) ?>">
+    <meta name="twitter:description" content="<?= Html::encode($metaDescription) ?>">
+    <meta name="twitter:image" content="<?= Html::encode($finalOgImage) ?>">
 
-    <!-- Favicon -->
+    <link rel="canonical" href="<?= Html::encode($canonicalUrl) ?>">
+
+    <meta name="theme-color" content="#45AD82">
     <link rel="icon" type="image/x-icon" href="<?= "$base/themes/$theme/assets/img/favicon.ico" ?>">
-    <link rel="apple-touch-icon" href="<?= "$base/themes/$theme/assets/img/apple-touch-icon.png" ?>">
 
-    <!-- Bootstrap + jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&family=Lora:wght@700&display=swap">
+    <link rel="stylesheet" href="<?= "$base/themes/$theme/assets/css/main.css" ?>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    <!-- Font Awesome (para íconos sociales) -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-          integrity="sha512-dYmE9Z3rroWAt4EvsC0BpvyEuk+qS0bkkCm1cW0XkyRjO6jwxKF1u9IiMaTZGi99ZTSdK6Ff8Hk7N0+Y5b7+lg=="
-          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
 <body>
 <?php $this->beginBody() ?>
 
-    <!-- HEADER -->
     <?= $this->render("@app/themes/$theme/views/header.php", [
         'opciones' => $opciones,
         'base'     => $base,
@@ -110,21 +156,17 @@ if (isset($contenido->pagina_offline) && is_object($contenido->pagina_offline)) 
         'media'    => $media,
     ]) ?>
 
-    <!-- CONTENIDO -->
     <main>
         <?= $content ?>
     </main>
 
-    <!-- FOOTER -->
     <?= $this->render("@app/themes/$theme/views/footer.php", [
         'opciones' => $opciones,
         'contenido'=> $contenido,
     ]) ?>
 
-    <!-- JS principal -->
     <script src="<?= "$base/themes/$theme/assets/js/main.js" ?>"></script>
 
-    <!-- Botón flotante de compartir + menú social -->
     <div class="share-floating">
         <button id="btn-share-main" class="share-main" type="button" aria-label="Compartir">
             <i class="fas fa-share-alt" aria-hidden="true"></i>
@@ -158,26 +200,18 @@ if (isset($contenido->pagina_offline) && is_object($contenido->pagina_offline)) 
             return { url, title, text };
         };
 
-        // Click en botón principal
         btnMain.addEventListener('click', async () => {
             const { url, title, text } = getShareData();
-
-            // 1) Intentamos Web Share API (móvil moderno)
             if (navigator.share) {
                 try {
                     await navigator.share({ title, text, url });
                     return;
-                } catch (e) {
-                    // Si el usuario cancela, seguimos como si nada
-                }
+                } catch (e) {}
             }
-
-            // 2) Fallback: mostrar menú social
             menu.classList.toggle('open');
             btnMain.classList.toggle('open');
         });
 
-        // Click fuera del menú cierra opciones
         document.addEventListener('click', (ev) => {
             if (!menu.classList.contains('open')) return;
             if (ev.target.closest('.share-floating')) return;
@@ -185,7 +219,6 @@ if (isset($contenido->pagina_offline) && is_object($contenido->pagina_offline)) 
             btnMain.classList.remove('open');
         });
 
-        // Manejo de cada red
         items.forEach(btn => {
             btn.addEventListener('click', () => {
                 const net = btn.getAttribute('data-network');
@@ -198,7 +231,6 @@ if (isset($contenido->pagina_offline) && is_object($contenido->pagina_offline)) 
                     const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
                     window.open(fbUrl, '_blank');
                 } else if (net === 'instagram') {
-                    // Instagram no tiene un share web real. Copiamos al portapapeles.
                     if (navigator.clipboard && navigator.clipboard.writeText) {
                         navigator.clipboard.writeText(text).then(() => {
                             alert('Enlace copiado. Pégalo en tu publicación o historia de Instagram.');
@@ -209,8 +241,6 @@ if (isset($contenido->pagina_offline) && is_object($contenido->pagina_offline)) 
                         alert('Copia manualmente este enlace: ' + url);
                     }
                 }
-
-                // Cerramos el menú después de compartir
                 menu.classList.remove('open');
                 btnMain.classList.remove('open');
             });
@@ -225,7 +255,6 @@ if (isset($contenido->pagina_offline) && is_object($contenido->pagina_offline)) 
         bottom: 1.5rem;
         z-index: 999;
     }
-
     .share-main {
         width: 52px;
         height: 52px;
@@ -240,21 +269,17 @@ if (isset($contenido->pagina_offline) && is_object($contenido->pagina_offline)) 
         box-shadow: 0 6px 18px rgba(0,0,0,0.25);
         transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background 0.12s ease-out;
     }
-
     .share-main:hover {
         background: #111827;
         transform: translateY(-2px);
         box-shadow: 0 10px 24px rgba(0,0,0,0.30);
     }
-
     .share-main.open {
         background: #111827;
     }
-
     .share-main i {
         font-size: 1.4rem;
     }
-
     .share-menu {
         position: absolute;
         right: 0;
@@ -267,13 +292,11 @@ if (isset($contenido->pagina_offline) && is_object($contenido->pagina_offline)) 
         transform: translateY(6px);
         transition: opacity 0.12s ease-out, transform 0.12s ease-out;
     }
-
     .share-menu.open {
         opacity: 1;
         pointer-events: auto;
         transform: translateY(0);
     }
-
     .share-item {
         width: 42px;
         height: 42px;
@@ -287,29 +310,23 @@ if (isset($contenido->pagina_offline) && is_object($contenido->pagina_offline)) 
         box-shadow: 0 4px 12px rgba(0,0,0,0.25);
         transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, filter 0.12s ease-out;
     }
-
     .share-item i {
         font-size: 1.2rem;
     }
-
     .share-item:hover {
         transform: translateY(-1px);
         filter: brightness(1.05);
         box-shadow: 0 7px 18px rgba(0,0,0,0.25);
     }
-
     .share-wa {
         background: #22c55e;
     }
-
     .share-fb {
         background: #2563eb;
     }
-
     .share-ig {
         background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
     }
-
     @media (max-width: 480px) {
         .share-floating {
             right: 1rem;

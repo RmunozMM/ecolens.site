@@ -1,6 +1,7 @@
 <?php
 use yii\helpers\Html;
 use yii\helpers\Url;
+use Yii;
 
 /** @var \stdClass $contenido */
 /** @var \stdClass $opciones */
@@ -19,10 +20,12 @@ $this->title = 'EcoLens: Explorando la Fauna Chilena con IA';
       <div class="hero-content-redesigned container">
         <h1 class="titulo">Descubre la Biodiversidad Chilena con EcoLens IA</h1>
         <p>
-          Utiliza nuestra plataforma para identificar la clase taxonómica de la fauna 
-          que encuentres en tus expediciones por Chile. Aprende y contribuye a la conservación.
+          EcoLens es un sistema de reconocimiento de fauna silvestre chilena que utiliza
+          inteligencia artificial para identificar la clase taxonómica de los animales
+          observados en <strong>parques nacionales y áreas protegidas</strong>.
+          Acerca la ciencia al terreno, en tiempo real, desde tu dispositivo móvil.
         </p>
-        <a href="<?= Url::to(['/registro']) ?>" class="cta-button">¡Comienza tu Aventura!</a>
+        <a href="<?= Url::to(['/registro']) ?>" class="cta-button">¡Comienza tu aventura!</a>
       </div>
     </section>
 
@@ -30,11 +33,14 @@ $this->title = 'EcoLens: Explorando la Fauna Chilena con IA';
     <section class="what-is-ecolens container text-center">
       <h2>¿Qué es EcoLens?</h2>
       <p class="lead">
-        EcoLens es un proyecto que une la Inteligencia Artificial con la pasión por la naturaleza chilena.
-        Nuestra misión es entregar herramientas accesibles para el reconocimiento de especies y
-        fomentar la educación ambiental en Chile. 
+        EcoLens nace como un proyecto de tesis de Magíster en Ingeniería Informática
+        que une la visión por computador con la conservación de la naturaleza chilena.
+        Su propósito es reducir la brecha entre los datos científicos y las personas
+        que visitan nuestros parques nacionales, entregando una herramienta accesible
+        para reconocer fauna nativa y aprender en el momento.
         <br><br>
-        Sube una imagen, descubre su clasificación y aprende sobre el ecosistema que te rodea.
+        Sube una imagen, descubre su clasificación taxonómica y explora información
+        asociada al ecosistema que te rodea.
       </p>
     </section>
 
@@ -44,17 +50,29 @@ $this->title = 'EcoLens: Explorando la Fauna Chilena con IA';
         <div class="feature-card-redesigned">
           <span class="feature-icon-redesigned">🔍</span>
           <h3>Clasificación Taxonómica</h3>
-          <p>Identificamos 7 clases principales: Mamíferos, Aves, Reptiles, Anfibios, Insectos, Arácnidos y Peces.</p>
+          <p>
+            Identificamos 7 clases principales:
+            Mamíferos, Aves, Reptiles, Anfibios, Insectos, Arácnidos y Peces,
+            como base para futuros modelos expertos más específicos.
+          </p>
         </div>
         <div class="feature-card-redesigned">
           <span class="feature-icon-redesigned">📚</span>
           <h3>Enfoque Educativo</h3>
-          <p>Promovemos la educación ambiental y una conexión profunda con el patrimonio natural de Chile.</p>
+          <p>
+            Promovemos la educación ambiental y una conexión profunda con el
+            patrimonio natural de Chile, integrando ciencia ciudadana y uso responsable
+            de áreas protegidas.
+          </p>
         </div>
         <div class="feature-card-redesigned">
           <span class="feature-icon-redesigned">⚡</span>
-          <h3>Rápido y Validado (TRL-4)</h3>
-          <p>Prototipo funcional validado en laboratorio, con clasificaciones en segundos (latencia p95 ≤ 3s).</p>
+          <h3>Rápido y Validado (TRL-4 → TRL-5)</h3>
+          <p>
+            Prototipo funcional validado en laboratorio y en entorno relevante:
+            latencia p95 ≈ 2,6 s, estabilidad &gt; 97&nbsp;% de uptime y desempeño
+            consistente en el flujo jerárquico router–experto.
+          </p>
         </div>
       </div>
     </section>
@@ -67,22 +85,29 @@ $this->title = 'EcoLens: Explorando la Fauna Chilena con IA';
           <span class="tech-icon">📈</span>
           <h3>Precisión Comprobada</h3>
           <p>
-            Modelo router con precisión global superior al <strong>92%</strong>;
-            los modelos expertos, como Mamíferos, alcanzan <strong>94%</strong>.
+            El modelo router generalista alcanza una
+            <strong>accuracy de 0,92</strong> y <strong>F1-macro 0,89</strong>;
+            el modelo experto para Mamíferos llega a <strong>F1-macro 0,90</strong>,
+            validado con imágenes no vistas durante el entrenamiento.
           </p>
         </div>
         <div class="tech-card-redesigned">
           <span class="tech-icon">🧠</span>
           <h3>IA de Vanguardia</h3>
           <p>
-            Usamos arquitecturas <strong>EfficientNet (B5 y B7)</strong> con Transfer Learning,
-            optimizadas para la biodiversidad chilena.
+            Utilizamos arquitecturas <strong>EfficientNet</strong>, con un router
+            <strong>B5</strong> y modelos expertos entrenados específicamente
+            para fauna chilena, sobre datos abiertos curados desde iNaturalist.
           </p>
         </div>
         <div class="tech-card-redesigned">
           <span class="tech-icon">🌐</span>
           <h3>Arquitectura Escalable</h3>
-          <p>Diseño modular <em>coarse-to-fine</em> que facilita agregar nuevas especies y modelos expertos.</p>
+          <p>
+            Diseño modular <em>coarse-to-fine</em> que separa la
+            identificación por clase taxonómica de la clasificación especializada,
+            facilitando agregar nuevos modelos y especies en futuras iteraciones.
+          </p>
         </div>
       </div>
     </section>
@@ -94,16 +119,18 @@ $this->title = 'EcoLens: Explorando la Fauna Chilena con IA';
         <div class="about-text-redesigned">
           <p>
             EcoLens es un <strong>proyecto de tesis de Magíster en Ingeniería Informática</strong>
-            de la Universidad Andrés Bello. Nace de la necesidad de un sistema accesible y
-            preciso para identificar fauna, contribuyendo a la conservación frente a la
-            pérdida acelerada de biodiversidad en Chile.
+            de la Universidad Andrés Bello. Surge frente al desafío de hacer más visible
+            la pérdida de biodiversidad en Chile y ofrecer una herramienta concreta
+            para apoyar la educación ambiental en parques nacionales.
           </p>
           <p>
-            Este desarrollo fue realizado por <strong>Rogelio Muñoz Muñoz</strong> y 
+            El desarrollo fue realizado por <strong>Rogelio Muñoz Muñoz</strong> y 
             <strong>Valeria Soriano Fernández</strong>, bajo la supervisión del profesor 
-            <strong>Miguel Solís Cid</strong>.
+            <strong>Miguel Solís Cid</strong>, integrando todo el ciclo:
+            modelos de IA, backend en Yii2, APIs REST y portal web operativo.
           </p>
-            <a href="<?= Url::to(['/nosotros']) ?>" class="cta-button">Conoce más sobre nosotros</a>
+          <a href="<?= Url::to(['/nosotros']) ?>" class="cta-button">
+            Conoce más sobre nosotros
           </a>
         </div>
         <div class="about-image-redesigned"></div>
@@ -116,14 +143,17 @@ $this->title = 'EcoLens: Explorando la Fauna Chilena con IA';
 <style>
 /* Se apoya en la paleta existente, sin redefinir variables globales */
 
-.titulo{
-color:#FFF;
+.titulo {
+  color: #FFF;
 }
-.cta-button{cursor: pointer;}
+.cta-button {
+  cursor: pointer;
+}
+
 /* --- HERO --- */
 .hero-section-redesigned {
   background: linear-gradient(rgba(31,59,58,0.75), rgba(31,59,58,0.75)),
-              url("/sitio/web//themes/default/assets/img/hero-bg2.png") center/cover no-repeat;
+              url("<?= Yii::getAlias('@web') ?>/themes/default/assets/img/hero-ecolens.png") center/cover no-repeat;
   color: #fff;
   padding: 120px 20px;
   text-align: center;
@@ -222,15 +252,22 @@ color:#FFF;
   flex: 1 1 300px;
   min-height: 250px;
   border-radius: 10px;
-  background: url("/sitio/web//themes/default/assets/img/hero-bg.png") center/cover no-repeat,
+  background: url("<?= Yii::getAlias('@web') ?>/themes/default/assets/img/hero-ecolens.png") center/cover no-repeat,
               var(--light-bg);
   box-shadow: var(--card-shadow);
 }
 
 /* Responsividad */
 @media (max-width: 768px) {
-  .hero-section-redesigned h1 {font-size: 2.2rem;}
-  .tech-card-redesigned, .feature-card-redesigned {width: 100%;}
-  .about-content-redesigned {flex-direction: column;}
+  .hero-section-redesigned h1 {
+    font-size: 2.2rem;
+  }
+  .tech-card-redesigned,
+  .feature-card-redesigned {
+    width: 100%;
+  }
+  .about-content-redesigned {
+    flex-direction: column;
+  }
 }
 </style>
