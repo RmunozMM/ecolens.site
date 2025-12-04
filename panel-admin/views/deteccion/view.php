@@ -18,15 +18,27 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('<i class="fa fa-clipboard-check"></i> Revisar', ['revisar', 'det_id' => $model->det_id], ['class' => 'btn btn-success']) ?>
-        <?= Html::a('<i class="fa fa-trash"></i> Eliminar', ['delete', 'det_id' => $model->det_id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => '¿Estás seguro de que deseas eliminar esta detección? Esta acción no se puede deshacer.',
-                'method' => 'post',
-            ],
-        ]) ?>
-        <?= Html::a('<i class="fa fa-arrow-left"></i> Volver', ['index'], ['class' => 'btn btn-secondary']) ?>
+        <?= Html::a(
+            '<i class="fa fa-clipboard-check"></i> Revisar',
+            ['revisar', 'det_id' => $model->det_id],
+            ['class' => 'btn btn-success']
+        ) ?>
+        <?= Html::a(
+            '<i class="fa fa-trash"></i> Eliminar',
+            ['delete', 'det_id' => $model->det_id],
+            [
+                'class' => 'btn btn-danger',
+                'data'  => [
+                    'confirm' => '¿Estás seguro de que deseas eliminar esta detección? Esta acción no se puede deshacer.',
+                    'method'  => 'post',
+                ],
+            ]
+        ) ?>
+        <?= Html::a(
+            '<i class="fa fa-arrow-left"></i> Volver',
+            ['index'],
+            ['class' => 'btn btn-secondary']
+        ) ?>
     </p>
 
     <?= DetailView::widget([
@@ -35,11 +47,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'det_id',
             [
                 'attribute' => 'det_imagen',
-                'label' => 'Imagen procesada',
-                'format' => 'raw',
-                'value' => function ($model) {
+                'label'     => 'Imagen procesada',
+                'format'    => 'raw',
+                'value'     => function ($model) {
                     return \app\widgets\ManageImages\FrontWidget::widget([
-                        'model' => $model,
+                        'model'    => $model,
                         'atributo' => 'det_imagen',
                     ]);
                 },
@@ -47,66 +59,85 @@ $this->params['breadcrumbs'][] = $this->title;
             'det_origen_archivo',
             [
                 'attribute' => 'det_confianza_router',
-                'format' => ['decimal', 4],
-                'label' => 'Confianza (Router)',
+                'format'    => ['decimal', 4],
+                'label'     => 'Confianza (Router)',
             ],
             [
                 'attribute' => 'det_confianza_experto',
-                'format' => ['decimal', 4],
-                'label' => 'Confianza (Experto)',
+                'format'    => ['decimal', 4],
+                'label'     => 'Confianza (Experto)',
             ],
             'det_tiempo_router_ms',
             'det_tiempo_experto_ms',
             [
                 'attribute' => 'taxonomia.tax_nombre',
-                'label' => 'Taxonomía',
+                'label'     => 'Taxonomía',
             ],
             [
                 'attribute' => 'especie.esp_nombre_cientifico',
-                'label' => 'Especie',
+                'label'     => 'Especie',
             ],
             'det_latitud',
             'det_longitud',
             'det_ubicacion_textual',
             [
                 'attribute' => 'det_dispositivo_tipo',
-                'value' => $model->displayDispositivo(),
+                'value'     => $model->displayDispositivo(),
             ],
             [
                 'attribute' => 'det_sistema_operativo',
-                'value' => $model->displaySO(),
+                'value'     => $model->displaySO(),
             ],
             [
                 'attribute' => 'det_navegador',
-                'value' => $model->displayNavegador(),
+                'value'     => $model->displayNavegador(),
             ],
             'det_ip_cliente',
             [
                 'attribute' => 'det_fuente',
-                'value' => $model->displayFuente(),
+                'value'     => $model->displayFuente(),
             ],
             [
                 'attribute' => 'det_estado',
-                'value' => $model->displayEstado(),
+                'value'     => $model->displayEstado(),
             ],
             [
                 'attribute' => 'det_revision_estado',
-                'value' => $model->displayRevision(),
+                'value'     => $model->displayRevision(),
             ],
             [
                 'label' => 'Observador',
                 'value' => function ($model) {
-                    if (!$model->observador) return '(no asignado)';
+                    if (!$model->observador) {
+                        return '(no asignado)';
+                    }
                     $o = $model->observador;
                     return "{$o->obs_nombre} ({$o->obs_usuario})";
                 },
             ],
             [
-                'attribute' => 'validador.usu_nombre',
                 'label' => 'Validado por',
+                'value' => function ($model) {
+                    // Relación getValidador() -> Users
+                    if (!$model->validador) {
+                        return '(sin validar)';
+                    }
+                    $v = $model->validador;
+
+                    // Sabemos que el campo correcto es usu_username
+                    return $v->usu_username ?: "Usuario #{$v->usu_id}";
+                },
             ],
-            'det_validacion_fecha:datetime',
-            'det_fecha:datetime',
+            [
+                'attribute' => 'det_validacion_fecha',
+                'format'    => ['datetime', 'php:d-m-Y H:i'],
+                'label'     => 'Fecha de validación',
+            ],
+            [
+                'attribute' => 'det_fecha',
+                'format'    => ['datetime', 'php:d-m-Y H:i'],
+                'label'     => 'Fecha de detección',
+            ],
         ], AuditoriaGridColumns::getAuditoriaAttributes($model)),
     ]) ?>
 

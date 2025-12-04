@@ -6,6 +6,7 @@ use app\widgets\ExportRecordsWidget;
 use app\widgets\CrudActionButtons;
 use app\widgets\ManageImages\FrontWidget;
 use app\helpers\AuditoriaGridColumns;
+use app\models\Deteccion;
 
 $this->title = 'Detecciones';
 $this->params['breadcrumbs'][] = $this->title;
@@ -45,7 +46,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         "https://ecolens.site/sitio/web/detalle-deteccion/{$model->det_id}",
                         [
                             'target' => '_blank',
-                            'title' => 'Ver detalle público',
+                            'title'  => 'Ver detalle público',
                             'data-pjax' => '0',
                         ]
                     ),
@@ -61,9 +62,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     'model' => $model,
                     'atributo' => 'det_imagen',
                     'htmlOptions' => [
-                        'style' => 'max-width: 80px; border-radius:4px;',
-                        'loading' => 'lazy'
-                    ]
+                        'style'   => 'max-width: 80px; border-radius:4px;',
+                        'loading' => 'lazy',
+                    ],
                 ]),
             ],
 
@@ -90,8 +91,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     $model->taxonomia
                         ? Html::a(
                             Html::encode($model->taxonomia->tax_nombre),
-                            ['taxonomia/view', 'id' => $model->taxonomia->tax_id],
-                            ['title' => 'Ver grupo taxonómico', 'data-pjax' => '0']
+                            ['taxonomia/view', 'tax_id' => $model->taxonomia->tax_id],
+                            [
+                                'title' => 'Ver grupo taxonómico',
+                                'data-pjax' => '0',
+                            ]
                         )
                         : Html::tag('span', '(no asignada)', ['class' => 'text-muted']),
                 'filterInputOptions' => [
@@ -109,8 +113,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     $model->especie
                         ? Html::a(
                             Html::encode($model->especie->esp_nombre_cientifico),
-                            ['especie/view', 'id' => $model->especie->esp_id],
-                            ['title' => 'Ver especie', 'data-pjax' => '0']
+                            ['especie/view', 'esp_id' => $model->especie->esp_id],
+                            [
+                                'title' => 'Ver especie',
+                                'data-pjax' => '0',
+                            ]
                         )
                         : Html::tag('span', '(no asignada)', ['class' => 'text-muted']),
                 'filterInputOptions' => [
@@ -123,17 +130,13 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'det_estado',
                 'label' => 'Estado',
-                'value' => fn($model) => ucfirst($model->displayEstado()),
-                'filter' => [
-                    'pendiente' => 'Pendiente',
-                    'validada'  => 'Validada',
-                    'rechazada' => 'Rechazada',
-                ],
+                'value' => fn($model) => $model->displayEstado(),
+                'filter' => Deteccion::optsDetEstado(),
                 'contentOptions' => function ($model) {
-                    $color = match($model->det_estado) {
-                        'validada' => '#d4edda',
+                    $color = match ($model->det_estado) {
+                        'validada'  => '#d4edda',
                         'rechazada' => '#f8d7da',
-                        default => '#fff3cd'
+                        default     => '#fff3cd',
                     };
                     return ['style' => "background-color: {$color};"];
                 },
@@ -143,11 +146,38 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'det_revision_estado',
                 'label' => 'Revisión',
-                'value' => fn($model) => ucfirst($model->displayRevision()),
+                'value' => fn($model) => $model->displayRevision(),
+                'filter' => Deteccion::optsDetRevision(),
+            ],
+
+            // ⭐ Feedback del observador (like / dislike / sin respuesta)
+            [
+                'attribute' => 'det_feedback_usuario',
+                'label'     => 'Feedback usuario',
+                'format'    => 'raw',
+                'value'     => function ($model) {
+                    $v = $model->det_feedback_usuario;
+
+                    if ($v === 'like') {
+                        return '<span class="label label-success">'
+                             . '<i class="fa fa-thumbs-up"></i> Coincide'
+                             . '</span>';
+                    }
+
+                    if ($v === 'dislike') {
+                        return '<span class="label label-danger">'
+                             . '<i class="fa fa-thumbs-down"></i> No coincide'
+                             . '</span>';
+                    }
+
+                    return '<span class="label label-default">Sin respuesta</span>';
+                },
                 'filter' => [
-                    'sin_revisar' => 'Sin revisar',
-                    'en_revision' => 'En revisión',
-                    'revisada'    => 'Revisada',
+                    'like'    => 'Coincide',
+                    'dislike' => 'No coincide',
+                ],
+                'contentOptions' => [
+                    'style' => 'white-space:nowrap; text-align:center;',
                 ],
             ],
 
@@ -181,7 +211,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'idAttribute' => 'det_id',
                 'nombreRegistro' => 'detección',
                 'customActions' => [
-                    'revisar' => function($model, $idAttr) {
+                    'revisar' => function ($model, $idAttr) {
                         $id = $model->{$idAttr};
                         return Html::a(
                             '',
@@ -192,8 +222,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'data-pjax' => '0',
                             ]
                         );
-                    }
-                ]
+                    },
+                ],
             ]),
         ],
     ]); ?>

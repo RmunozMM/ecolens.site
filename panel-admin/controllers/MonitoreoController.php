@@ -197,6 +197,39 @@ class MonitoreoController extends Controller
 
         $trl = 'TRL 4';
 
+        // ─────────────────────────────
+        // Métricas de feedback usuarios
+        // ─────────────────────────────
+        $feedbackRow = (new Query())
+            ->select([
+                'total'        => 'COUNT(*)',
+                'con_feedback' => "SUM(CASE WHEN det_feedback_usuario IN ('like','dislike') THEN 1 ELSE 0 END)",
+                'likes'        => "SUM(CASE WHEN det_feedback_usuario = 'like' THEN 1 ELSE 0 END)",
+                'dislikes'     => "SUM(CASE WHEN det_feedback_usuario = 'dislike' THEN 1 ELSE 0 END)",
+            ])
+            ->from(['d' => 'detecciones'])
+            ->where(['>=', 'd.det_fecha', $desde])
+            ->one();
+
+        $feedbackUsuarios = [
+            'total'         => (int)($feedbackRow['total'] ?? 0),
+            'con_feedback'  => (int)($feedbackRow['con_feedback'] ?? 0),
+            'likes'         => (int)($feedbackRow['likes'] ?? 0),
+            'dislikes'      => (int)($feedbackRow['dislikes'] ?? 0),
+            'porc_like'     => 0.0,
+            'porc_dislike'  => 0.0,
+            'porc_cubierto' => 0.0,
+        ];
+
+        if ($feedbackUsuarios['con_feedback'] > 0) {
+            $feedbackUsuarios['porc_like']    = round($feedbackUsuarios['likes']    * 100 / $feedbackUsuarios['con_feedback'], 1);
+            $feedbackUsuarios['porc_dislike'] = round($feedbackUsuarios['dislikes'] * 100 / $feedbackUsuarios['con_feedback'], 1);
+        }
+
+        if ($feedbackUsuarios['total'] > 0) {
+            $feedbackUsuarios['porc_cubierto'] = round($feedbackUsuarios['con_feedback'] * 100 / $feedbackUsuarios['total'], 1);
+        }
+
         // Latencias crudas para percentiles
         $latencias = (new Query())
             ->select(['ms' => 'det_tiempo_router_ms'])
@@ -309,6 +342,7 @@ class MonitoreoController extends Controller
             'topObservadores'    => $topObservadores,
             'ultimas'            => $ultimas,
             'geoPuntos'          => $geoPuntos,
+            'feedbackUsuarios'   => $feedbackUsuarios,
         ]);
     }
 

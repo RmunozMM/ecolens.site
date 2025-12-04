@@ -18,7 +18,7 @@ class DeteccionController extends Controller
         return [
             'access' => [
                 'class' => \yii\filters\AccessControl::class,
-                'only' => ['index', 'view', 'create', 'update', 'delete'],
+                'only' => ['index', 'view', 'create', 'update', 'delete', 'revisar'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -33,7 +33,9 @@ class DeteccionController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'delete'  => ['POST'],
+                    // Si quisieras forzar POST en revisar, podrías agregar:
+                    // 'revisar' => ['GET', 'POST'],
                 ],
             ],
         ];
@@ -41,11 +43,11 @@ class DeteccionController extends Controller
 
     public function actionIndex()
     {
-        $searchModel = new DeteccionSearch();
+        $searchModel  = new DeteccionSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
+            'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -62,14 +64,18 @@ class DeteccionController extends Controller
         $model = new Deteccion();
 
         if ($this->request->isPost && $model->load($this->request->post())) {
-            $model->created_at = date('Y-m-d H:i:s');
-            $model->created_by = Yii::$app->user->identity->usu_id;
 
+            // TimestampBehavior y BlameableBehavior se encargan de:
+            // - created_at / updated_at
+            // - det_obs_id / det_validado_por (según configuración del modelo)
             if ($model->save()) {
-                $model->det_imagen = LibreriaHelper::subirFoto($model, 'det_imagen', 'detecciones');
 
-                if ($model->det_imagen) {
-                    $model->save(false); // Guarda imagen solamente
+                // Subir imagen asociada
+                $rutaImagen = LibreriaHelper::subirFoto($model, 'det_imagen', 'detecciones');
+
+                if ($rutaImagen) {
+                    $model->det_imagen = $rutaImagen;
+                    $model->save(false, ['det_imagen']);
                 }
 
                 return $this->redirect(['view', 'det_id' => $model->det_id]);
@@ -78,53 +84,96 @@ class DeteccionController extends Controller
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', ['model' => $model]);
+        return $this->render('create', [
+            'model' => $model,
+        ]);
     }
 
     public function actionUpdate($det_id)
     {
-        $model = $this->findModel($det_id);
+        $model         = $this->findModel($det_id);
         $imagenAntigua = $model->det_imagen;
 
         if ($this->request->isPost && $model->load($this->request->post())) {
-            $model->updated_at = date('Y-m-d H:i:s');
-            $model->updated_by = Yii::$app->user->identity->usu_id;
 
+            // Subimos nueva imagen (si viene)
             $rutaImagen = LibreriaHelper::subirFoto($model, 'det_imagen', 'detecciones');
 
             if ($rutaImagen) {
+                // Eliminamos imagen anterior si existe
                 if (!empty($imagenAntigua)) {
                     $ruta = Yii::getAlias("@app/../recursos/uploads/detecciones/{$imagenAntigua}");
-                    if (file_exists($ruta)) {
-                        unlink($ruta);
+                    if (is_file($ruta)) {
+                        @unlink($ruta);
                     }
                 }
                 $model->det_imagen = $rutaImagen;
             } else {
+                // Si no se subió una nueva, mantenemos la anterior
                 $model->det_imagen = $imagenAntigua;
             }
 
+            // TimestampBehavior / BlameableBehavior se encargan de updated_at / det_validado_por
             if ($model->save()) {
                 return $this->redirect(['view', 'det_id' => $model->det_id]);
             }
         }
 
-        return $this->render('update', ['model' => $model]);
+        return $this->render('update', [
+            'model' => $model,
+        ]);
     }
 
     public function actionDelete($det_id)
     {
         $model = $this->findModel($det_id);
-        $ruta = Yii::getAlias("@app/../recursos/uploads/detecciones/{$model->det_imagen}");
 
-        if (!empty($model->det_imagen) && file_exists($ruta)) {
-            unlink($ruta);
+        if (!empty($model->det_imagen)) {
+            $ruta = Yii::getAlias("@app/../recursos/uploads/detecciones/{$model->det_imagen}");
+            if (is_file($ruta)) {
+                @unlink($ruta);
+            }
         }
 
         $model->delete();
 
         return $this->redirect(['index']);
     }
+
+    public function actionRevisar($det_id)
+    {
+        $model = $this->findModel($det_id);
+
+        // Usamos escenario 'revisar' que está definido en el modelo
+        $model->scenario = 'revisar';
+
+        if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
+
+            // Solo seteamos explícitamente la fecha de validación.
+            // El usuario validador lo maneja BlameableBehavior.
+            $model->det_validacion_fecha = date('Y-m-d H:i:s');
+
+            if ($model->save(false, [
+                'det_estado',
+                'det_revision_estado',
+                'det_observaciones',
+                'det_validado_por',       // lo rellena el behavior
+                'det_validacion_fecha',
+                'updated_at',
+            ])) {
+                Yii::$app->session->setFlash('success', '✅ La detección fue revisada correctamente.');
+                return $this->redirect(['view', 'det_id' => $model->det_id]);
+            }
+
+            Yii::$app->session->setFlash('error', '⚠️ No se pudo guardar la revisión.');
+        }
+
+        return $this->render('revisar', [
+            'model' => $model,
+        ]);
+    }
+
+
 
     protected function findModel($det_id)
     {
@@ -134,37 +183,4 @@ class DeteccionController extends Controller
 
         throw new NotFoundHttpException('La detección solicitada no existe.');
     }
-public function actionRevisar($det_id)
-{
-    $model = $this->findModel($det_id);
-
-    // Definimos explícitamente que este flujo no crea, solo revisa/valida
-    $model->scenario = 'revisar';
-
-    if (Yii::$app->request->isPost) {
-        if ($model->load(Yii::$app->request->post())) {
-            // Campos que sí se pueden actualizar durante la revisión
-            $model->det_validado_por = Yii::$app->user->id ?? null;
-            $model->det_validacion_fecha = date('Y-m-d H:i:s');
-
-            if ($model->save(false, [
-                'det_estado',
-                'det_revision_estado',
-                'det_observaciones',
-                'det_validado_por',
-                'det_validacion_fecha',
-                'updated_at'
-            ])) {
-                Yii::$app->session->setFlash('success', '✅ La detección fue revisada correctamente.');
-                return $this->redirect(['view', 'det_id' => $model->det_id]);
-            } else {
-                Yii::$app->session->setFlash('error', '⚠️ No se pudo guardar la revisión.');
-            }
-        }
-    }
-
-    return $this->render('revisar', [
-        'model' => $model,
-    ]);
-}
 }

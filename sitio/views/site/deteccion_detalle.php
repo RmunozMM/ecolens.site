@@ -1,10 +1,52 @@
 <?php
 /** @var int $id */
 
+use yii\helpers\Html;
+
+/**
+ * Carga entorno compartido (igual que en Mis detecciones)
+ */
+function ecolens_env_load_detalle(): array {
+    $candidatos = [
+        Yii::getAlias('@app') . '/config/ecolens_env.php',
+        dirname(Yii::getAlias('@app')) . '/panel-admin/config/ecolens_env.php',
+    ];
+    foreach ($candidatos as $p) {
+        if (is_file($p)) {
+            $env = require $p;
+            if (is_array($env)) return $env;
+        }
+    }
+    $host    = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $isLocal = (bool)preg_match('/^(localhost|127\.0\.0\.1)(:\d+)?$/i', $host);
+    return [
+        'isLocal'   => $isLocal,
+        'API_BASE'  => ($isLocal ? 'http://localhost:8888' : 'https://ecolens.site') . '/panel-admin/web',
+        'SITE_BASE' => ($isLocal ? 'http://localhost:8888' : 'https://ecolens.site') . '/sitio/web',
+        'endpoints' => [],
+    ];
+}
+
+$env       = ecolens_env_load_detalle();
+$API_BASE  = rtrim($env['API_BASE'], '/');
+$SITE_BASE = rtrim($env['SITE_BASE'], '/');
+
+// Endpoints
+$API_DETALLE  = $env['endpoints']['detalle']  ?? ($API_BASE . '/api/deteccion/detalle');
+$API_FEEDBACK = $env['endpoints']['feedback'] ?? ($API_BASE . '/api/deteccion/feedback');
+
 $this->title = "Detalle de Detección #{$id}";
 ?>
 
 <section class="detalle-deteccion container">
+
+  <nav class="breadcrumb">
+    <a href="<?= Html::encode($SITE_BASE) ?>">Inicio</a>
+    <span class="sep">/</span>
+    <a href="<?= Html::encode($SITE_BASE) ?>/mis-detecciones">Mis detecciones</a>
+    <span class="sep">/</span>
+    <span class="current">Detección #<?= Html::encode($id) ?></span>
+  </nav>
   <h1>Detalle de detección</h1>
   <div id="det-meta" class="det-meta"></div>
   <div id="det-content">Cargando...</div>
@@ -16,14 +58,10 @@ $this->title = "Detalle de Detección #{$id}";
 
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
-  const DET_ID = <?= json_encode($id) ?>;
-
-  const isLocal = location.hostname.includes("localhost") || location.hostname.includes("127.0.0.1");
-  const API_BASE = isLocal
-    ? "http://localhost:8888/ecolens.site/panel-admin/web"
-    : "https://ecolens.site/panel-admin/web";
-
-  const API_URL = `${API_BASE}/api/deteccion/detalle?id=${DET_ID}`;
+  const DET_ID      = <?= json_encode($id) ?>;
+  const API_DETALLE = <?= json_encode($API_DETALLE,  JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) ?>;
+  const API_FEEDBACK= <?= json_encode($API_FEEDBACK, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) ?>;
+  const SITE_BASE   = <?= json_encode($SITE_BASE,   JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) ?>;
 
   const meta = document.getElementById("det-meta");
   const cont = document.getElementById("det-content");
@@ -65,32 +103,96 @@ document.addEventListener("DOMContentLoaded", async () => {
     return `${(num * 100).toFixed(1)}%`;
   };
 
-  try {
-    const r = await fetch(API_URL, { credentials: "include" });
-    const raw = await r.json();
+  // Bloque feedback: UI
+  const applyFeedbackUI = (value) => {
+    const yesBtn = document.getElementById("fb-yes");
+    const noBtn  = document.getElementById("fb-no");
+    const status = document.getElementById("fb-detail-status");
+    if (!yesBtn || !noBtn || !status) return;
 
-    const success = (raw && typeof raw === "object" && "success" in raw)
-      ? !!raw.success
+    yesBtn.classList.remove("active");
+    noBtn.classList.remove("active");
+
+    if (value === "like") {
+      yesBtn.classList.add("active");
+      status.textContent = "Marcaste esta identificación como correcta.";
+      status.className = "fb-detail-status answered";
+    } else if (value === "dislike") {
+      noBtn.classList.add("active");
+      status.textContent = "Marcaste esta identificación como incorrecta.";
+      status.className = "fb-detail-status answered";
+    } else {
+      status.textContent = "Aún no has respondido. Esta respuesta es opcional y nos ayuda a mejorar el sistema.";
+      status.className = "fb-detail-status pending";
+    }
+  };
+
+  const sendFeedback = async (nextValue) => {
+    const status = document.getElementById("fb-detail-status");
+    const block  = document.getElementById("fb-block");
+    if (!block) return;
+
+    const current = block.dataset.feedback || "";
+    const value   = (nextValue === current) ? "" : nextValue; // toggle
+
+    if (status) {
+      status.textContent = "Guardando respuesta...";
+      status.className   = "fb-detail-status pending";
+    }
+
+    try {
+      const resp = await fetch(API_FEEDBACK, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ id: DET_ID, feedback: value }),
+      });
+      const raw  = await resp.text();
+      let data   = {};
+      try { data = JSON.parse(raw); } catch (_) {}
+
+      if (!resp.ok || data.success === false) {
+        throw new Error(data.message || "Error al guardar el feedback.");
+      }
+
+      block.dataset.feedback = value || "";
+      applyFeedbackUI(value || null);
+    } catch (e) {
+      if (status) {
+        status.textContent = "No se pudo guardar tu respuesta. Intenta nuevamente.";
+        status.className   = "fb-detail-status pending";
+      }
+    }
+  };
+
+  try {
+    const url = `${API_DETALLE}?id=${encodeURIComponent(DET_ID)}`;
+    const r   = await fetch(url, { credentials: "include" });
+    const raw = await r.text();
+    let data;
+    try { data = JSON.parse(raw); }
+    catch {
+      throw new Error("Respuesta no válida del servidor");
+    }
+
+    const success = (data && typeof data === "object" && "success" in data)
+      ? !!data.success
       : true;
 
     if (!success) {
-      err.textContent = raw.message || "No se pudo obtener la detección.";
+      err.textContent = data.message || "No se pudo obtener la detección.";
       err.style.display = "block";
       cont.style.display = "none";
       return;
     }
 
-    const d = (raw && typeof raw === "object" && "data" in raw)
-      ? raw.data
-      : raw;
+    const d = data;
 
     const e = d.especie    || {};
     const t = d.taxonomia  || {};
     const o = d.observador || {};
     const imgDeteccion = d.imagen_deteccion || "";
-    const imgEspecie   = d.imagen_especie || e.imagen || "";
-
-    console.log("DETALLE DETECCION", d);
+    const imgEspecie   = d.imagen_especie || (e.imagen || "");
 
     const especieDisplayName =
       e.nombre_comun || e.nombre_cientifico || "Especie desconocida";
@@ -98,7 +200,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const especieUrl =
       d.url_especie
       || ((t && t.slug && e && e.slug)
-            ? `https://ecolens.site/sitio/web/taxonomias/${t.slug}/${e.slug}`
+            ? `${SITE_BASE}/taxonomias/${t.slug}/${e.slug}`
             : null);
 
     const especieLinkHtml =
@@ -115,26 +217,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="meta-left">
           <span class="badge-id">Detección #${DET_ID}</span>
         </div>
-        <div class="meta-right">
-          <button id="copy-link" class="btn-copy" type="button" title="Copiar enlace al detalle">
-            Copiar enlace
-          </button>
-        </div>
       </div>
     `;
 
-    document.getElementById("copy-link").addEventListener("click", () => {
-      const url = `${location.origin}${location.pathname}`;
-      navigator.clipboard?.writeText(url).catch(() => {});
-    });
-
     const grupoLabel = t?.nombre ? t.nombre : "No registrado";
     const grupoHtml = (t?.slug && t?.nombre)
-      ? `<a href="https://ecolens.site/sitio/web/taxonomias/${t.slug}" rel="noopener">${t.nombre}</a>`
+      ? `<a href="${SITE_BASE}/taxonomias/${t.slug}" rel="noopener">${t.nombre}</a>`
       : grupoLabel;
 
     const confRouter  = toPercent(pickField(d, "conf_router", "det_confianza_router"));
     const confExperto = toPercent(pickField(d, "conf_experto", "det_confianza_experto"));
+
+    // feedback actual desde el API (nuevo esquema: feedback.usuario)
+    const fbObj         = d.feedback || {};
+    const feedbackValue = fbObj.usuario || null;
 
     cont.innerHTML = `
       <div class="detalle-wrapper">
@@ -163,6 +259,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                 </div>`
               : ""
           }
+
+          <!-- Bloque feedback detalle BAJO LAS IMÁGENES -->
+          <div id="fb-block" class="fb-detail-block" data-feedback="">
+            <h3>¿Coincide la especie sugerida con lo que observaste?</h3>
+            <div class="fb-detail-buttons">
+              <button id="fb-yes" type="button" class="fb-detail-btn fb-yes">
+                👍 <span>Sí, coincide</span>
+              </button>
+              <button id="fb-no"  type="button" class="fb-detail-btn fb-no">
+                👎 <span>No coincide</span>
+              </button>
+            </div>
+            <p id="fb-detail-status" class="fb-detail-status pending"></p>
+          </div>
         </div>
 
         <div class="detalle-info">
@@ -192,9 +302,22 @@ document.addEventListener("DOMContentLoaded", async () => {
           : `<p class="hint-muted">Sin coordenadas disponibles para mostrar mapa.</p>`
       }
 
-      <a href="../../mis-detecciones" class="btn-volver">← Volver</a>
+      <a href="<?php echo Html::encode($SITE_BASE); ?>/mis-detecciones" class="btn-volver">← Volver</a>
     `;
 
+    // feedback inicial
+    const fbBlock = document.getElementById("fb-block");
+    if (fbBlock) {
+      fbBlock.dataset.feedback = feedbackValue || "";
+      applyFeedbackUI(feedbackValue || null);
+    }
+
+    const yesBtn = document.getElementById("fb-yes");
+    const noBtn  = document.getElementById("fb-no");
+    if (yesBtn) yesBtn.addEventListener("click", () => sendFeedback("like"));
+    if (noBtn)  noBtn.addEventListener("click", () => sendFeedback("dislike"));
+
+    // Mapa
     if (hasCoords(d.latitud, d.longitud)) {
       const map = L.map('mapa').setView([+d.latitud, +d.longitud], 14);
 
@@ -209,6 +332,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
   } catch (e) {
+    console.error(e);
     err.textContent = "Error de conexión al cargar la detección.";
     err.style.display = "block";
     cont.style.display = "none";
@@ -237,8 +361,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 .detalle-imagenes {
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: 1.2rem;
   justify-content: flex-start;
 }
 
@@ -323,6 +448,86 @@ document.addEventListener("DOMContentLoaded", async () => {
   color: #374151;
 }
 
+/* Bloque feedback detalle BAJO LAS IMÁGENES */
+.fb-detail-block {
+  margin-top: 0.5rem;
+  padding: 1rem 1.1rem;
+  border-radius: 14px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.fb-detail-block h3 {
+  margin: 0 0 0.3rem;
+  font-size: 0.95rem;
+  color: #111827;
+}
+
+.fb-detail-hint {
+  margin: 0 0 0.7rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.fb-detail-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.fb-detail-btn {
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.1s ease;
+}
+
+.fb-detail-btn span {
+  white-space: nowrap;
+}
+
+.fb-detail-btn.fb-yes.active {
+  background: #dcfce7;
+  border-color: #22c55e;
+  box-shadow: 0 0 0 1px #a7f3d0;
+}
+
+.fb-detail-btn.fb-no.active {
+  background: #fee2e2;
+  border-color: #ef4444;
+  box-shadow: 0 0 0 1px #fecaca;
+}
+
+.fb-detail-btn:hover {
+  background: #f3f4f6;
+  transform: translateY(-1px);
+}
+
+.fb-detail-status {
+  margin: 0;
+  font-size: 0.78rem;
+}
+
+.fb-detail-status.pending {
+  color: #6b7280;
+}
+
+.fb-detail-status.answered {
+  color: #374151;
+}
+
 .mapa {
   width: 100%;
   height: 380px;
@@ -353,8 +558,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   .detalle-imagenes {
-    flex-direction: column;
-    gap: 1rem;
+    flex: 0 0 360px;
   }
 }
 
@@ -378,19 +582,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   font-size: 0.9rem;
 }
 
-.btn-copy {
-  padding:.25rem .6rem;
-  border:1px solid #d1d5db;
-  border-radius:.5rem;
-  background:#fff;
-  cursor:pointer;
-  font-size: 0.85rem;
-}
-
-.btn-copy:hover {
-  background:#f3f4f6;
-}
-
 .img-box.placeholder .img-ph {
   width:100%;
   max-width:400px;
@@ -409,5 +600,78 @@ document.addEventListener("DOMContentLoaded", async () => {
   margin-top:1rem;
   color:#64748b;
   font-size: 0.9rem;
+}
+
+/* ============================
+   Detalle de especie
+   ============================ */
+
+.detalle-especie {
+  padding: 4rem 1rem;
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+/* Título y subtítulo */
+.titulo-especie {
+  font-size: 2.3rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #2b2b2b;
+}
+
+.subtitulo-especie {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.subtitulo-especie .latin {
+  font-style: italic;
+  color: #444;
+}
+
+/* Layout principal: imagen izquierda, texto derecha en desktop */
+.especie-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+/* Imagen */
+.especie-imagen img {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  display: block;
+}
+
+/* Texto / descripción */
+.especie-texto .descripcion {
+  font-size: 1.05rem;
+  color: #444;
+  line-height: 1.7;
+  text-align: justify;
+}
+
+/* Breadcrumb genérico EcoLens */
+.breadcrumb {
+  background: #f1f3f5;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  color: #555;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.breadcrumb a {
+  color: #2e7d32;
+  text-decoration: none;
+  font-weight: 500;
 }
 </style>

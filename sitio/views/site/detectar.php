@@ -22,8 +22,8 @@ if (file_exists($envPath)) {
     ];
 }
 
-$API_BASE   = rtrim($env['API_BASE'], '/');
-$SITE_BASE  = rtrim($env['SITE_BASE'], '/');
+$API_BASE    = rtrim($env['API_BASE'], '/');
+$SITE_BASE   = rtrim($env['SITE_BASE'], '/');
 $API_PREDICT = $API_BASE . '/api/ia/predict';
 $API_WHOAMI  = $env['endpoints']['whoami']    ?? ($API_BASE . '/api/observador/whoami');
 $API_REG     = $env['endpoints']['registrar'] ?? ($API_BASE . '/api/deteccion/registrar');
@@ -35,8 +35,7 @@ $API_REG     = $env['endpoints']['registrar'] ?? ($API_BASE . '/api/deteccion/re
 
   <div class="upload-form">
     <div class="upload-box" role="button" tabindex="0"
-         onclick="document.getElementById('image-upload').click()
-         "
+         onclick="document.getElementById('image-upload').click()"
          onkeypress="if(event.key==='Enter'||event.key===' '){document.getElementById('image-upload').click();}">
       <span class="upload-icon">📸</span>
       <p>Haz clic para subir una imagen</p>
@@ -118,6 +117,27 @@ document.addEventListener("DOMContentLoaded", () => {
         const who = JSON.parse(whoTxt);
         if (who?.authenticated && who.id) userId = who.id;
       } catch (_) {}
+
+      // CTA post detección (en vez de like/dislike)
+      const renderPostDetectionCTA = (fichaUrl, speciesName, deteccionId) => {
+        const safeName = speciesName || "la especie detectada";
+
+        resultBox.innerHTML += `
+          <div class="feedback-wrapper">
+            <p class="feedback-title">
+              Tu detección se guardó en tu historial de observaciones.
+            </p>
+            <p class="feedback-subtitle">
+              Puedes revisar con más calma el resultado para <strong>${safeName}</strong> en tu sección "Mis detecciones".
+            </p>
+            <div class="feedback-actions">
+              <a href="${API.MIS_DET}" class="feedback-btn feedback-link">
+                Ver mis detecciones
+              </a>
+            </div>
+          </div>
+        `;
+      };
 
       // === 1) IA predict ===
       const fdModel = new FormData();
@@ -299,7 +319,9 @@ document.addEventListener("DOMContentLoaded", () => {
         resultBox.innerHTML += `<p class="result-success">✅ Detección registrada con ID #${apiData.id}</p>`;
       }
 
-      // === 5) Redirigir / sugerir ficha de la especie basada en speciesDisplayName (no en BD) ===
+      // === 5) Ficha especie + CTA a Mis detecciones ===
+      let fichaUrl = null;
+
       if (speciesDisplayName) {
         try {
           const slugUrl = API.PREDICT.replace('/api/ia/predict','/api/contenido/slug-especie')
@@ -312,7 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           if (slugJson?.success && slugJson.slug) {
             const fichaBase = API.MIS_DET.replace('/mis-detecciones','/taxonomias/');
-            const fichaUrl  = `${fichaBase}${slugJson.taxSlug}/${slugJson.slug}`;
+            fichaUrl  = `${fichaBase}${slugJson.taxSlug}/${slugJson.slug}`;
             resultBox.innerHTML += `
               <p class="species-link-wrapper">
                 <a href="${fichaUrl}" class="mini-link">
@@ -327,6 +349,9 @@ document.addEventListener("DOMContentLoaded", () => {
           resultBox.innerHTML += `<p class="species-link-fallback">⚠️ No se pudo cargar la ficha de la especie.</p>`;
         }
       }
+
+      // CTA final a Mis detecciones (sin pedir juicio explícito)
+      renderPostDetectionCTA(fichaUrl, speciesDisplayName, apiData.id ?? null);
 
     } catch (err) {
       console.error("❌ Error general:", err);
@@ -653,6 +678,61 @@ document.addEventListener("DOMContentLoaded", () => {
   margin-top: 1rem;
   font-size: 0.86rem;
   color: #4b5563;
+}
+
+/* Bloque “post detección” */
+.feedback-wrapper {
+  margin-top: 1.1rem;
+  text-align: center;
+}
+
+.feedback-title {
+  margin: 0 0 0.2rem;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.feedback-subtitle {
+  margin: 0 0 0.6rem;
+  font-size: 0.86rem;
+  color: #4b5563;
+}
+
+.feedback-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.feedback-btn {
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.88rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.12s ease;
+}
+
+.feedback-link {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  color: #312e81;
+}
+
+.feedback-link:hover {
+  background: #e0e7ff;
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.25);
+  transform: translateY(-1px);
 }
 
 /* Ocultar botón y bloquear interacción durante procesamiento */

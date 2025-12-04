@@ -115,6 +115,26 @@ class Deteccion extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * Escenarios personalizados.
+     * IMPORTANTE: aquí definimos el escenario 'revisar' para que load() sí cargue esos campos.
+     */
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+
+        $scenarios['revisar'] = [
+            'det_estado',
+            'det_revision_estado',
+            'det_observaciones',
+            'det_validado_por',
+            'det_validacion_fecha',
+            'updated_at',
+        ];
+
+        return $scenarios;
+    }
+
     public function behaviors()
     {
         return [
@@ -128,55 +148,144 @@ class Deteccion extends \yii\db\ActiveRecord
                 'class' => BlameableBehavior::class,
                 'createdByAttribute' => 'det_obs_id',
                 'updatedByAttribute' => 'det_validado_por',
-                'defaultValue' => Yii::$app->user->id ?? null,
+                'value' => function () {
+                    // Siempre usamos el usu_id del modelo Users
+                    return Yii::$app->user->identity->usu_id ?? null;
+                },
             ],
         ];
     }
 
+
     // === Relaciones ===
 
-    public function getEspecie()     { return $this->hasOne(Especie::class, ['esp_id' => 'det_esp_id']); }
-    public function getTaxonomia()   { return $this->hasOne(Taxonomia::class, ['tax_id' => 'det_tax_id']); }
-    public function getModeloRouter(){ return $this->hasOne(Modelo::class, ['mod_id' => 'det_modelo_router_id']); }
-    public function getModeloExperto(){ return $this->hasOne(Modelo::class, ['mod_id' => 'det_modelo_experto_id']); }
-    public function getUsuario()     { return $this->hasOne(Users::class, ['usu_id' => 'det_obs_id']); }
-    public function getValidador()   { return $this->hasOne(Users::class, ['usu_id' => 'det_validado_por']); }
+    public function getEspecie()
+    {
+        return $this->hasOne(Especie::class, ['esp_id' => 'det_esp_id']);
+    }
+
+    public function getTaxonomia()
+    {
+        return $this->hasOne(Taxonomia::class, ['tax_id' => 'det_tax_id']);
+    }
+
+    public function getModeloRouter()
+    {
+        return $this->hasOne(Modelo::class, ['mod_id' => 'det_modelo_router_id']);
+    }
+
+    public function getModeloExperto()
+    {
+        return $this->hasOne(Modelo::class, ['mod_id' => 'det_modelo_experto_id']);
+    }
+
+    public function getUsuario()
+    {
+        return $this->hasOne(Users::class, ['usu_id' => 'det_obs_id']);
+    }
+
+    public function getValidador()
+    {
+        return $this->hasOne(Users::class, ['usu_id' => 'det_validado_por']);
+    }
+
+    public function getObservador()
+    {
+        return $this->hasOne(Observador::class, ['obs_id' => 'det_obs_id']);
+    }
 
     // === ENUM helpers ===
-    public static function optsDetFuente() { return [self::DET_FUENTE_WEB=>'Web',self::DET_FUENTE_API=>'API',self::DET_FUENTE_MOVIL=>'Móvil',self::DET_FUENTE_SISTEMA=>'Sistema']; }
-    public static function optsDetEstado() { return [self::DET_ESTADO_PENDIENTE=>'Pendiente',self::DET_ESTADO_VALIDADA=>'Validada',self::DET_ESTADO_RECHAZADA=>'Rechazada']; }
-    public static function optsDetRevision() { return [self::DET_REVISION_SIN=>'Sin revisar',self::DET_REVISION_EN=>'En revisión',self::DET_REVISION_OK=>'Revisada']; }
-    public static function optsDetDispositivo() { return [self::DET_DISPOSITIVO_DESKTOP=>'Desktop',self::DET_DISPOSITIVO_MOBILE=>'Móvil',self::DET_DISPOSITIVO_TABLET=>'Tablet',self::DET_DISPOSITIVO_OTROS=>'Otros']; }
-    public static function optsDetSO() { return [self::DET_SO_WINDOWS=>'Windows',self::DET_SO_MACOS=>'macOS',self::DET_SO_LINUX=>'Linux',self::DET_SO_ANDROID=>'Android',self::DET_SO_IOS=>'iOS',self::DET_SO_OTRO=>'Otro']; }
-    public static function optsDetNavegador() { return [self::DET_NAV_CHROME=>'Chrome',self::DET_NAV_FIREFOX=>'Firefox',self::DET_NAV_SAFARI=>'Safari',self::DET_NAV_EDGE=>'Edge',self::DET_NAV_OTRO=>'Otro']; }
+
+    public static function optsDetFuente()
+    {
+        return [
+            self::DET_FUENTE_WEB     => 'Web',
+            self::DET_FUENTE_API     => 'API',
+            self::DET_FUENTE_MOVIL   => 'Móvil',
+            self::DET_FUENTE_SISTEMA => 'Sistema',
+        ];
+    }
+
+    public static function optsDetEstado()
+    {
+        return [
+            self::DET_ESTADO_PENDIENTE => 'Pendiente',
+            self::DET_ESTADO_VALIDADA  => 'Validada',
+            self::DET_ESTADO_RECHAZADA => 'Rechazada',
+        ];
+    }
+
+    public static function optsDetRevision()
+    {
+        return [
+            self::DET_REVISION_SIN => 'Sin revisar',
+            self::DET_REVISION_EN  => 'En revisión',
+            self::DET_REVISION_OK  => 'Revisada',
+        ];
+    }
+
+    public static function optsDetDispositivo()
+    {
+        return [
+            self::DET_DISPOSITIVO_DESKTOP => 'Desktop',
+            self::DET_DISPOSITIVO_MOBILE  => 'Móvil',
+            self::DET_DISPOSITIVO_TABLET  => 'Tablet',
+            self::DET_DISPOSITIVO_OTROS   => 'Otros',
+        ];
+    }
+
+    public static function optsDetSO()
+    {
+        return [
+            self::DET_SO_WINDOWS => 'Windows',
+            self::DET_SO_MACOS   => 'macOS',
+            self::DET_SO_LINUX   => 'Linux',
+            self::DET_SO_ANDROID => 'Android',
+            self::DET_SO_IOS     => 'iOS',
+            self::DET_SO_OTRO    => 'Otro',
+        ];
+    }
+
+    public static function optsDetNavegador()
+    {
+        return [
+            self::DET_NAV_CHROME  => 'Chrome',
+            self::DET_NAV_FIREFOX => 'Firefox',
+            self::DET_NAV_SAFARI  => 'Safari',
+            self::DET_NAV_EDGE    => 'Edge',
+            self::DET_NAV_OTRO    => 'Otro',
+        ];
+    }
 
     // === Display helpers ===
-    public function displayFuente()    { return self::optsDetFuente()[$this->det_fuente] ?? '-'; }
-    public function displayEstado()    { return self::optsDetEstado()[$this->det_estado] ?? '-'; }
-    public function displayRevision()  { return self::optsDetRevision()[$this->det_revision_estado] ?? '-'; }
-    public function displayDispositivo(){ return self::optsDetDispositivo()[$this->det_dispositivo_tipo] ?? '-'; }
-    public function displaySO()        { return self::optsDetSO()[$this->det_sistema_operativo] ?? '-'; }
-    public function displayNavegador() { return self::optsDetNavegador()[$this->det_navegador] ?? '-'; }
 
-
-    public function actionRevisar($id)
+    public function displayFuente()
     {
-        $model = $this->findModel($id);
-
-        // Solo campos de revisión/validación
-        if ($this->request->isPost && $model->load($this->request->post())) {
-            $model->scenario = 'revisar';
-            $model->save(false, ['det_estado', 'det_revision_estado', 'det_observaciones', 'det_validado_por', 'det_validacion_fecha']);
-            Yii::$app->session->setFlash('success', 'La detección fue revisada correctamente.');
-            return $this->redirect(['view', 'det_id' => $model->det_id]);
-        }
-
-        return $this->render('revisar', [
-            'model' => $model,
-        ]);
+        return self::optsDetFuente()[$this->det_fuente] ?? '-';
     }
-        public function getObservador()
-        {
-            return $this->hasOne(Observador::class, ['obs_id' => 'det_obs_id']);
-        }
+
+    public function displayEstado()
+    {
+        return self::optsDetEstado()[$this->det_estado] ?? '-';
+    }
+
+    public function displayRevision()
+    {
+        return self::optsDetRevision()[$this->det_revision_estado] ?? '-';
+    }
+
+    public function displayDispositivo()
+    {
+        return self::optsDetDispositivo()[$this->det_dispositivo_tipo] ?? '-';
+    }
+
+    public function displaySO()
+    {
+        return self::optsDetSO()[$this->det_sistema_operativo] ?? '-';
+    }
+
+    public function displayNavegador()
+    {
+        return self::optsDetNavegador()[$this->det_navegador] ?? '-';
+    }
 }

@@ -7,6 +7,7 @@ use yii\rest\Controller;
 use yii\web\Response;
 use yii\web\UploadedFile;
 use yii\web\BadRequestHttpException;
+use yii\web\UnauthorizedHttpException;
 use yii\filters\Cors;
 use yii\filters\ContentNegotiator;
 
@@ -248,7 +249,7 @@ class DeteccionController extends Controller
 
             return [
                 'success'      => true,
-                'message'      => '✅ Detección registrado exitosamente.',
+                'message'      => '✅ Detección registrada exitosamente.',
                 'id'           => $id,
                 'taxon_id'     => $det->det_tax_id,
                 'especie_id'   => $det->det_esp_id,
@@ -364,6 +365,12 @@ class DeteccionController extends Controller
 
             // 🔗 URL directa a la ficha de especie (si existe)
             'url_especie' => $fichaUrl,
+
+            // 🧩 Feedback del observador (para paneles futuros, analytics, etc.)
+            'feedback' => [
+                'usuario' => $det->det_feedback_usuario,
+                'fecha'   => $det->det_feedback_fecha,
+            ],
         ];
     }
 
@@ -427,6 +434,7 @@ class DeteccionController extends Controller
                 'confianza_router'  => $d->det_confianza_router,
                 'confianza_experto' => $d->det_confianza_experto,
                 'ubicacion'         => $d->det_ubicacion_textual,
+                'feedback_usuario'  => $d->det_feedback_usuario ?? null,
 
                 'imagen_deteccion'  => $this->buildUploadUrl($d->det_imagen),
 
@@ -466,4 +474,77 @@ class DeteccionController extends Controller
         ];
     }
 
+    // ─────────────────────────────────────────────
+    // FEEDBACK USUARIO (like / dislike)
+    // ─────────────────────────────────────────────
+    public function actionFeedback()
+    {
+        $req = Yii::$app->request;
+
+        if (!$req->isPost) {
+            throw new BadRequestHttpException('Método no permitido. Usa POST.');
+        }
+
+        $id       = (int)($req->post('id') ?? 0);
+        $feedback = trim((string)$req->post('feedback', ''));
+
+        if ($id <= 0) {
+            throw new BadRequestHttpException('ID de detección inválido.');
+        }
+
+        $validos = ['', 'like', 'dislike'];
+        if (!in_array($feedback, $validos, true)) {
+            throw new BadRequestHttpException('Valor de feedback no válido.');
+        }
+
+        $session = Yii::$app->session;
+        if (!$session->isActive) { $session->open(); }
+
+        $observerId = (int)($session->get('observador_id') ?? $session->get('usuario_id') ?? 0);
+
+        $det = Deteccion::findOne($id);
+        if (!$det) {
+            return [
+                'success' => false,
+                'message' => "No se encontró la detección #$id",
+            ];
+        }
+
+        // Asegurar que la detección pertenece al observador (si tenemos columna)
+        $observerCol = null;
+        foreach (['det_obs_id', 'det_observador_id'] as $col) {
+            if ($det->hasAttribute($col)) {
+                $observerCol = $col;
+                break;
+            }
+        }
+
+        if ($observerCol && $observerId > 0 && (int)$det->$observerCol !== $observerId) {
+            throw new UnauthorizedHttpException('No puedes registrar feedback sobre una detección que no es tuya.');
+        }
+
+        // Armar payload de actualización
+        if ($feedback === '') {
+            // El usuario “borra” su respuesta
+            $data = [
+                'det_feedback_usuario' => null,
+                'det_feedback_fecha'   => null,
+            ];
+        } else {
+            $data = [
+                'det_feedback_usuario' => $feedback,
+                'det_feedback_fecha'   => date('Y-m-d H:i:s'),
+            ];
+        }
+
+        Yii::$app->db->createCommand()
+            ->update($det::tableName(), $data, ['det_id' => $id])
+            ->execute();
+
+        return [
+            'success'  => true,
+            'id'       => $id,
+            'feedback' => $feedback === '' ? null : $feedback,
+        ];
+    }
 }

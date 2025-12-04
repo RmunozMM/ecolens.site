@@ -30,6 +30,7 @@ class DeteccionSearch extends Deteccion
                     'det_validado_por',
                     'det_tiempo_router_ms',
                     'det_tiempo_experto_ms',
+                    'det_fb_tax_id',
                 ],
                 'integer'
             ],
@@ -53,6 +54,12 @@ class DeteccionSearch extends Deteccion
                     'esp_nombre_cientifico',
                     'tax_nombre',
                     'obs_nombre',
+
+                    // Feedback observador
+                    'det_fb_estado',
+                    'det_fb_comentario',
+                    'det_fb_fecha',
+                    'det_feedback_usuario',   // ⬅️ FALTABA ESTO
                 ],
                 'safe'
             ],
@@ -124,6 +131,9 @@ class DeteccionSearch extends Deteccion
             'd.det_longitud'          => $this->det_longitud,
             'd.det_fecha'             => $this->det_fecha,
             'd.det_validacion_fecha'  => $this->det_validacion_fecha,
+            // Feedback observador
+            'd.det_fb_tax_id'         => $this->det_fb_tax_id,
+            'd.det_fb_fecha'          => $this->det_fb_fecha,
         ]);
 
         // === FILTROS TEXTUALES ===
@@ -139,7 +149,18 @@ class DeteccionSearch extends Deteccion
               ->andFilterWhere(['like', 'd.det_navegador', $this->det_navegador])
               ->andFilterWhere(['like', 'd.det_observaciones', $this->det_observaciones])
               ->andFilterWhere(['like', 'd.created_at', $this->created_at])
-              ->andFilterWhere(['like', 'd.updated_at', $this->updated_at]);
+              ->andFilterWhere(['like', 'd.updated_at', $this->updated_at])
+
+              // Feedback observador (estado/comentario)
+              ->andFilterWhere(['like', 'd.det_fb_estado', $this->det_fb_estado])
+              ->andFilterWhere(['like', 'd.det_fb_comentario', $this->det_fb_comentario]);
+
+        // === FILTRO EXACTO PARA like / dislike ===
+        if ($this->det_feedback_usuario !== null && $this->det_feedback_usuario !== '') {
+            $query->andFilterWhere([
+                'd.det_feedback_usuario' => $this->det_feedback_usuario,
+            ]);
+        }
 
         // === FILTROS POR RELACIONES ===
         $query->andFilterWhere(['like', 'e.esp_nombre_cientifico', $this->esp_nombre_cientifico])

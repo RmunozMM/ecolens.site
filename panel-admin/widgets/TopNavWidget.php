@@ -21,7 +21,7 @@ class TopNavWidget extends Widget
      */
     public function run()
     {
-        // Hora inicial del servidor (solo formato HH:MM:SS)
+        // Hora inicial del servidor (formato HH:MM:SS)
         $initial = date('H:i:s');
         list($h, $m, $s) = explode(':', $initial);
 
@@ -132,7 +132,7 @@ JS;
         ]);
 
         $itemsConfig = [
-            ['label' => 'Mi Perfil',   'url' => ['/user/myprofile',   'usu_id' => $id]],
+            ['label' => 'Mi Perfil',   'url' => ['/user/myprofile',  'usu_id' => $id]],
             ['label' => 'Mi Password', 'url' => ['/user/mypassword', 'usu_id' => $id]],
             ['label' => 'Mi Correo',   'url' => ['/user/mymail',     'usu_id' => $id]],
             '-',
@@ -151,20 +151,23 @@ JS;
             }
         }
 
+        // IMPORTANTE: usar data-toggle (Bootstrap 3/4), no data-bs-toggle
         $toggle = Html::a(
-            $img . " $username <span class='fa fa-angle-down'></span>",
-            '#',
+            $img . " " . Html::encode($username) . " <span class='fa fa-angle-down'></span>",
+            'javascript:void(0);',
             [
-                'class'          => 'nav-link dropdown-toggle',
-                'id'             => 'userDropdown',
-                'role'           => 'button',
-                'data-bs-toggle' => 'dropdown',
-                'aria-expanded'  => 'false',
+                'class'         => 'nav-link dropdown-toggle',
+                'id'            => 'userDropdown',
+                'role'          => 'button',
+                'data-toggle'   => 'dropdown',   // <- clave para BS3/4
+                'aria-haspopup' => 'true',
+                'aria-expanded' => 'false',
             ]
         );
 
+        // Para Bootstrap 3/4: dropdown-menu + dropdown-menu-right
         $dropdown = Html::tag('ul', $items, [
-            'class'           => 'dropdown-menu dropdown-menu-end',
+            'class'           => 'dropdown-menu dropdown-menu-right',
             'aria-labelledby' => 'userDropdown',
         ]);
 
@@ -175,4 +178,3 @@ JS;
         );
     }
 }
-?>

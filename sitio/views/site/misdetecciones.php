@@ -33,13 +33,15 @@ function ecolens_env_load(): array {
         'endpoints' => [],
     ];
 }
+
 $env = ecolens_env_load();
 $API_BASE  = rtrim($env['API_BASE'], '/');
 $SITE_BASE = rtrim($env['SITE_BASE'], '/');
 
 // Endpoints
-$API_LISTAR = $env['endpoints']['listar'] ?? ($API_BASE . '/api/deteccion/listar');
-$API_WHOAMI = $env['endpoints']['whoami'] ?? ($API_BASE . '/api/observador/whoami');
+$API_LISTAR   = $env['endpoints']['listar']   ?? ($API_BASE . '/api/deteccion/listar');
+$API_WHOAMI   = $env['endpoints']['whoami']   ?? ($API_BASE . '/api/observador/whoami');
+$API_FEEDBACK = $env['endpoints']['feedback'] ?? ($API_BASE . '/api/deteccion/feedback');
 
 // ID desde sesión
 $observerId = (int)Yii::$app->session->get('observador_id', 0);
@@ -60,10 +62,11 @@ $observerId = (int)Yii::$app->session->get('observador_id', 0);
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   // Inyectados desde PHP
-  const API_LIST   = <?= json_encode($API_LISTAR, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) ?>;
-  const API_WHOAMI = <?= json_encode($API_WHOAMI,  JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) ?>;
-  const SITE_BASE  = <?= json_encode($SITE_BASE,   JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) ?>;
-  let OBSERVER_ID  = <?= (int)$observerId ?>;
+  const API_LIST     = <?= json_encode($API_LISTAR,   JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) ?>;
+  const API_WHOAMI   = <?= json_encode($API_WHOAMI,   JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) ?>;
+  const API_FEEDBACK = <?= json_encode($API_FEEDBACK, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) ?>;
+  const SITE_BASE    = <?= json_encode($SITE_BASE,    JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) ?>;
+  let   OBSERVER_ID  = <?= (int)$observerId ?>;
 
   const grid  = document.getElementById("det-grid");
   const empty = document.getElementById("det-empty");
@@ -81,6 +84,37 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } catch (_) {}
     return OBSERVER_ID;
+  }
+
+  function applyFeedbackState(wrapper, feedback) {
+    if (!wrapper) return;
+    const detId    = wrapper.dataset.detId;
+    const likeBtn  = wrapper.querySelector(".fb-like");
+    const disBtn   = wrapper.querySelector(".fb-dislike");
+    const statusEl = document.getElementById("fb-status-" + detId);
+
+    wrapper.dataset.feedback = feedback || "";
+
+    if (likeBtn)  likeBtn.classList.remove("is-active");
+    if (disBtn)   disBtn.classList.remove("is-active");
+
+    let text = "Aún no respondes si esta identificación coincide.";
+    let cls  = "feedback-status feedback-pending";
+
+    if (feedback === "like") {
+      if (likeBtn) likeBtn.classList.add("is-active");
+      text = "Marcaste esta identificación como correcta.";
+      cls  = "feedback-status feedback-answered";
+    } else if (feedback === "dislike") {
+      if (disBtn) disBtn.classList.add("is-active");
+      text = "Marcaste esta identificación como incorrecta.";
+      cls  = "feedback-status feedback-answered";
+    }
+
+    if (statusEl) {
+      statusEl.textContent = text;
+      statusEl.className = cls;
+    }
   }
 
   async function cargar(page = 1, perPage = 24) {
@@ -119,17 +153,29 @@ document.addEventListener("DOMContentLoaded", () => {
         const especie = it.especie || {};
         const tax     = especie.taxonomia || {};
 
+        // feedback_usuario viene del API; si no existe, queda pendiente
+        const feedback = (it.feedback_usuario === "like" || it.feedback_usuario === "dislike")
+          ? it.feedback_usuario
+          : "";
+
         // ✅ Corrección: limpieza de URL de imagen duplicada
         let imgSrc = it.imagen_deteccion || especie.imagen || "";
-        imgSrc = imgSrc.replace(/https?:\/\/[^/]+\/[^/]+\//, match => match.endsWith("/recursos/") ? match : match.replace(/ecolens\.site\//, ""));
+        imgSrc = imgSrc.replace(
+          /https?:\/\/[^/]+\/[^/]+\//,
+          match => match.endsWith("/recursos/") ? match : match.replace(/ecolens\.site\//, "")
+        );
 
         if (!imgSrc) imgSrc = "https://picsum.photos/400/300?random";
 
-        const titulo = especie.nombre_comun || especie.nombre_cientifico || "Especie desconocida";
-        const fecha = it.fecha ? new Date(it.fecha).toLocaleString("es-CL", { dateStyle: "medium", timeStyle: "short" }) : "—";
-        const ubicacion = it.ubicacion || "Ubicación no especificada";
-        const taxon = tax.nombre || "Sin clasificación";
-        const descripcion = (especie.descripcion || "").replace(/<[^>]+>/g, "").slice(0, 180) + (especie.descripcion ? "..." : "");
+        const titulo      = especie.nombre_comun || especie.nombre_cientifico || "Especie desconocida";
+        const fecha       = it.fecha
+          ? new Date(it.fecha).toLocaleString("es-CL", { dateStyle: "medium", timeStyle: "short" })
+          : "—";
+        const ubicacion   = it.ubicacion || "Ubicación no especificada";
+        const taxon       = tax.nombre || "Sin clasificación";
+        const descripcion = (especie.descripcion || "")
+          .replace(/<[^>]+>/g, "")
+          .slice(0, 180) + (especie.descripcion ? "..." : "");
 
         const card = document.createElement("div");
         card.className = "gallery-card";
@@ -138,18 +184,38 @@ document.addEventListener("DOMContentLoaded", () => {
             <img src="${imgSrc}" alt="${titulo}">
           </div>
           <div class="card-content">
-            <h3>${titulo}</h3>
+            <div class="card-header-row">
+              <h3 class="card-title">${titulo}</h3>
+              <div class="feedback-wrapper"
+                   data-det-id="${it.id}"
+                   data-feedback="${feedback}">
+                <button class="fb-btn fb-like"
+                        type="button"
+                        title="Marcar como correcta">👍</button>
+                <button class="fb-btn fb-dislike"
+                        type="button"
+                        title="Marcar como incorrecta">👎</button>
+              </div>
+            </div>
+            <p id="fb-status-${it.id}" class="feedback-status"></p>
+
             <p class="taxon">${taxon}</p>
             <p class="descripcion">${descripcion}</p>
             <p class="fecha">${fecha}</p>
             <p class="ubicacion">${ubicacion}</p>
             <div class="card-footer">
               <a href="${SITE_BASE}/detalle-deteccion/${it.id}" class="btn-ver">🔍 Ver detalle</a>
-              ${ it.url_especie ? `<a href="${it.url_especie}" target="_blank" class="btn-ver btn-sec">🌐 Ficha especie</a>` : "" }
+              ${ it.url_especie
+                  ? `<a href="${it.url_especie}" target="_blank" class="btn-ver btn-sec">🌐 Ficha especie</a>`
+                  : "" }
             </div>
           </div>
         `;
         grid.appendChild(card);
+
+        // Aplica estado inicial (pendiente / like / dislike)
+        const wrapper = card.querySelector(".feedback-wrapper");
+        applyFeedbackState(wrapper, feedback);
       }
     } catch (err) {
       console.error("❌ Error al cargar detecciones:", err);
@@ -159,6 +225,48 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   btn.addEventListener("click", () => cargar());
+
+  // Manejo de clics en like / dislike (delegado)
+  grid.addEventListener("click", async (ev) => {
+    const btn = ev.target.closest(".fb-btn");
+    if (!btn) return;
+
+    const wrapper = btn.closest(".feedback-wrapper");
+    if (!wrapper || wrapper.dataset.sending === "1") return;
+
+    const detId    = wrapper.dataset.detId;
+    const current  = wrapper.dataset.feedback || "";
+    const isLike   = btn.classList.contains("fb-like");
+    const next     = isLike ? (current === "like" ? "" : "like")
+                            : (current === "dislike" ? "" : "dislike");
+
+    wrapper.dataset.sending = "1";
+
+    try {
+      const resp = await fetch(API_FEEDBACK, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ id: detId, feedback: next })
+      });
+      const txt  = await resp.text();
+      let data   = {};
+      try { data = JSON.parse(txt); } catch (_) {}
+
+      if (!resp.ok || !data.success) {
+        throw new Error(data.message || "Error al guardar tu respuesta.");
+      }
+
+      applyFeedbackState(wrapper, next);
+    } catch (err) {
+      console.error("❌ Error feedback:", err);
+      alert("No se pudo guardar tu respuesta. Intenta nuevamente.");
+    } finally {
+      wrapper.dataset.sending = "0";
+    }
+  });
+
+  // Primera carga
   cargar();
 });
 </script>
@@ -196,6 +304,65 @@ document.addEventListener("DOMContentLoaded", () => {
   font-size: 1.2rem;
   color: #1e293b;
 }
+
+/* título + feedback alineados */
+.card-header-row {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.card-title {
+  flex: 1 1 auto;
+}
+
+/* Bloque de like / dislike */
+.feedback-wrapper {
+  display: flex;
+  gap: .25rem;
+  flex-shrink: 0;
+  align-items: center;
+}
+.fb-btn {
+  border: none;
+  background: transparent;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: .15rem .35rem;
+  border-radius: 999px;
+  opacity: .45;
+  transition:
+    opacity .15s ease,
+    transform .1s ease,
+    background-color .15s ease,
+    box-shadow .15s ease;
+}
+.fb-btn:hover {
+  opacity: .9;
+  transform: translateY(-1px);
+}
+.fb-like.is-active {
+  opacity: 1;
+  background-color: #dcfce7;
+  box-shadow: 0 0 0 1px #a7f3d0;
+}
+.fb-dislike.is-active {
+  opacity: 1;
+  background-color: #fee2e2;
+  box-shadow: 0 0 0 1px #fecaca;
+}
+
+/* Texto de estado de feedback */
+.feedback-status {
+  margin: .15rem 0 .5rem;
+  font-size: .78rem;
+}
+.feedback-pending {
+  color: #6b7280;
+}
+.feedback-answered {
+  color: #4b5563;
+}
+
 .card-content .taxon {
   color: #475569;
   font-size: 0.95rem;

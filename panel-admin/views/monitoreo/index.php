@@ -13,6 +13,7 @@
 /** @var array $topObservadores */
 /** @var array $ultimas */
 /** @var array $geoPuntos */
+/** @var array $feedbackUsuarios */
 
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -21,6 +22,17 @@ $this->title = "Monitoreo | Panel";
 
 /** Sección activa */
 $actionId = $this->context->action->id ?? 'index';
+
+/** Normalización feedback para que no reviente si algo viene null */
+$fb = $feedbackUsuarios ?? [];
+$fbTotal        = (int)($fb['total']         ?? 0);
+$fbConFeedback  = (int)($fb['con_feedback']  ?? 0);
+$fbLikes        = (int)($fb['likes']         ?? 0);
+$fbDislikes     = (int)($fb['dislikes']      ?? 0);
+$fbPorcLike     = (float)($fb['porc_like']   ?? 0);
+$fbPorcCubierto = (float)($fb['porc_cubierto'] ?? 0);
+
+$tieneFeedbackEnRango = $fbConFeedback > 0;
 ?>
 <h1>Dashboard de Monitoreo y Telemetría</h1>
 
@@ -75,6 +87,30 @@ $actionId = $this->context->action->id ?? 'index';
     <h3><?= Html::encode($trl) ?></h3>
     <p>Madurez tecnológica</p>
   </div>
+
+  <!-- TARJETA: Feedback de usuarios -->
+  <div class="stat-item">
+    <h3>
+      <?php if (($feedbackUsuarios['con_feedback'] ?? 0) > 0): ?>
+        <?= number_format($feedbackUsuarios['porc_like'] ?? 0, 1) ?>%
+      <?php else: ?>
+        —
+      <?php endif; ?>
+    </h3>
+    <p>Acierto según usuarios (rango seleccionado)</p>
+
+    <p class="stat-meta">
+      <?php if (($feedbackUsuarios['con_feedback'] ?? 0) > 0): ?>
+        <?= number_format($feedbackUsuarios['con_feedback'] ?? 0) ?> respuestas
+        (<?= number_format($feedbackUsuarios['likes'] ?? 0) ?> 👍 ·
+        <?= number_format($feedbackUsuarios['dislikes'] ?? 0) ?> 👎)<br>
+        Cobertura: <?= number_format($feedbackUsuarios['porc_cubierto'] ?? 0, 1) ?>% de las detecciones
+      <?php else: ?>
+        Sin respuestas de usuarios en este rango.
+      <?php endif; ?>
+    </p>
+  </div>
+
 </div>
 
 <!-- Percentiles de latencia -->
@@ -253,6 +289,15 @@ document.addEventListener("DOMContentLoaded", () => {
 .stat-item{background:#fff;border-radius:12px;box-shadow:0 4px 8px rgba(0,0,0,.06);text-align:center;padding:1rem}
 .stat-item h3{color:#0f172a;font-size:1.8rem;margin:0}
 .stat-item p{color:#475569;margin:.3rem 0 0}
+.stat-item .stat-meta{
+  margin-top:.35rem;
+  font-size:.8rem;
+  line-height:1.3;
+  color:#94a3b8;
+}
+.stat-item .stat-meta .hint{
+  font-style:italic;
+}
 
 .p-grid{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:.75rem;margin:1rem 0}
 .p-item{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:.75rem;text-align:center}
