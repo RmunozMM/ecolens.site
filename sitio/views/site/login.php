@@ -1,5 +1,6 @@
 <?php
 // Vista: login (sitio)
+use yii\helpers\Url;
 
 $this->title = "Iniciar Sesión en EcoLens";
 
@@ -37,9 +38,10 @@ $env = ecolens_env_load();
 $API_BASE  = rtrim($env['API_BASE'], '/');
 $SITE_BASE = rtrim($env['SITE_BASE'], '/');
 
-$LOGIN_URL = $env['endpoints']['login'] ?? ($API_BASE . '/api/observador/login');
+$LOGIN_URL = $env['endpoints']['login']   ?? ($API_BASE . '/api/observador/login');
 $REDIRECT  = $SITE_BASE . '/detectar';
 $REGISTER  = $SITE_BASE . '/registro';
+$RECOVER   = Url::to(['/recuperar-clave'], true);
 ?>
 <main>
   <section class="login-section container">
@@ -62,6 +64,11 @@ $REGISTER  = $SITE_BASE . '/registro';
       <p class="register-note" style="margin-top:1.2rem;">
         ¿No tienes cuenta?
         <a href="<?= htmlspecialchars($REGISTER, ENT_QUOTES, 'UTF-8') ?>">Regístrate aquí</a>
+      </p>
+
+      <p class="register-note" style="margin-top:0.4rem;font-size:0.9rem;">
+        ¿Olvidaste tu contraseña?
+        <a href="<?= htmlspecialchars($RECOVER, ENT_QUOTES, 'UTF-8') ?>">Recupérala aquí</a>
       </p>
     </form>
   </section>

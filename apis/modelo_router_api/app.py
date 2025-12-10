@@ -1,5 +1,5 @@
 # ================================================================
-# 🌿 EcoLens Router + Expert Models (v3.8 - Predict-only)
+# - EcoLens Router + Expert Models (v3.8 - Predict-only)
 # - Router general: EfficientNet-B5 (torchvision o timm, autodetección)
 # - Expert: autocarga timm/torchvision según checkpoint
 # - La IA SOLO predice: router + experto, sin decidir "concluyente"

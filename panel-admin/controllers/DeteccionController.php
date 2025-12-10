@@ -33,7 +33,7 @@ class DeteccionController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete'  => ['POST'],
+                    'delete'  => ['GET', 'POST'],
                     // Si quisieras forzar POST en revisar, podrías agregar:
                     // 'revisar' => ['GET', 'POST'],
                 ],

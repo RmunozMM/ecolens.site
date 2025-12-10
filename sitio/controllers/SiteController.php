@@ -326,5 +326,21 @@ private function borrarDirectorio($dir)
     @rmdir($dir);
 }
 
+
+
+
+
+public function actionRecuperarClave($t = null)
+{
+    // Solo renderiza la vista del frontend.
+    // El JS interno decidirá si está en modo "solicitar enlace" o "definir nueva clave"
+    // según si viene o no el token $t.
+    return $this->render('recuperar-clave', [
+        'token' => $t,
+    ]);
+}
+
+
+
     
 }

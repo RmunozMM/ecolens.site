@@ -651,4 +651,155 @@ HTML;
             ],
         ];
     }
+
+
+    /** Construye URL pública de recuperación (en el SITIO, no en el API) */
+    private function buildResetUrl(string $token): string
+    {
+        $env = $this->loadEnv();
+        $siteBase = rtrim($env['SITE_BASE'] ?? '/', '/');
+        return $siteBase . '/recuperar-clave?t=' . urlencode($token);
+    }
+
+    /** Envía correo de recuperación de contraseña */
+    private function sendResetEmail(Observador $m, string $token): bool
+    {
+        $url = $this->buildResetUrl($token);
+        $subject = 'Restablece tu contraseña de EcoLens';
+
+        $html = <<<HTML
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+    <meta charset="UTF-8">
+    <title>Recuperación de contraseña EcoLens</title>
+    <style>
+    body { background-color:#f8fafc; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; margin:0; padding:0; }
+    .container { max-width:600px; margin:40px auto; background:#ffffff; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.05); padding:32px; }
+    h2 { color:#0f172a; font-size:20px; margin-bottom:16px; }
+    p { color:#334155; font-size:15px; line-height:1.6; }
+    .btn { display:inline-block; background:#2563eb; color:#fff; padding:12px 22px; border-radius:8px; text-decoration:none; font-weight:600; margin-top:12px; }
+    .footer { margin-top:32px; font-size:13px; color:#64748b; border-top:1px solid #e2e8f0; padding-top:12px; text-align:center; }
+    </style>
+    </head>
+    <body>
+    <div class="container">
+    <h2>Hola {$this->e($m->obs_nombre)},</h2>
+    <p>Hemos recibido una solicitud para restablecer tu contraseña en <strong>EcoLens</strong>.</p>
+    <p>Si fuiste tú, haz clic en el botón para definir una nueva contraseña:</p>
+    <p><a href="{$this->e($url)}" class="btn">Restablecer contraseña</a></p>
+    <p>Si el botón no funciona, copia y pega este enlace en tu navegador:</p>
+    <p><a href="{$this->e($url)}">{$this->e($url)}</a></p>
+    <p>Si no reconoces esta solicitud, puedes ignorar este correo. Tu contraseña seguirá siendo válida.</p>
+    <div class="footer">
+    Este enlace expira en 1 hora.<br>
+    © EcoLens — Sistema de Observación de Fauna
+    </div>
+    </div>
+    </body>
+    </html>
+    HTML;
+
+        try {
+            return LibreriaHelper::enviarCorreoHtml(
+                $m->obs_email,
+                $subject,
+                $html,
+                $this->mailFrom()
+            );
+        } catch (\Throwable $e) {
+            Yii::error("No se pudo enviar email de recuperación: ".$e->getMessage(), __METHOD__);
+            return false;
+        }
+    }
+
+
+    // ─────────────────────────────────────────────
+// RECUPERAR CONTRASEÑA - Paso 1: solicitar enlace (JSON)
+// Usado por la vista del sitio /recuperar-clave (sin token)
+// ─────────────────────────────────────────────
+public function actionRecuperarClaveSolicitar()
+{
+    $userOrEmail = trim((string)$this->getBodyParam('username'));
+    if ($userOrEmail === '') {
+        return ['success' => false, 'message' => 'Debes ingresar tu correo o nombre de usuario.'];
+    }
+
+    $lookup = (strpos($userOrEmail, '@') !== false)
+        ? ['obs_email' => $this->normalizeEmail($userOrEmail)]
+        : ['obs_usuario' => $this->normalizeUsername($userOrEmail)];
+
+    $m = Observador::find()->where($lookup)->one();
+    if (!$m) {
+        return ['success' => false, 'message' => 'No se encontró ninguna cuenta con esos datos.'];
+    }
+
+    if (mb_strtolower((string)$m->obs_estado) !== 'activo') {
+        return ['success' => false, 'message' => 'La cuenta debe estar activa para restablecer la contraseña.'];
+    }
+
+    // Generar token de recuperación (1 hora) reutilizando campos de activación
+    $plain  = Yii::$app->security->generateRandomString(48);
+    $hash   = hash('sha256', $plain);
+    $expira = date('Y-m-d H:i:s', time() + 3600);
+
+    $m->obs_act_token_hash = $hash;
+    $m->obs_act_expires    = $expira;
+    $m->updated_at         = date('Y-m-d H:i:s');
+    $m->save(false, ['obs_act_token_hash','obs_act_expires','updated_at']);
+
+    $sent = $this->sendResetEmail($m, $plain);
+
+    return [
+        'success' => (bool)$sent,
+        'message' => $sent
+            ? 'Te enviamos un correo con instrucciones para restablecer tu contraseña.'
+            : 'No se pudo enviar el correo. Intenta más tarde.',
+    ];
+}
+
+
+// ─────────────────────────────────────────────
+// RECUPERAR CONTRASEÑA - Paso 2: confirmar nueva clave (JSON)
+// Usado por la vista del sitio /recuperar-clave?t=...
+// ─────────────────────────────────────────────
+public function actionRecuperarClaveConfirmar()
+{
+    $token = trim((string)$this->getBodyParam('token'));
+    $pass1 = trim((string)$this->getBodyParam('password'));
+    $pass2 = trim((string)$this->getBodyParam('password_confirm'));
+
+    if ($token === '' || $pass1 === '' || $pass2 === '') {
+        return ['success' => false, 'message' => 'Debes completar todos los campos.'];
+    }
+    if ($pass1 !== $pass2) {
+        return ['success' => false, 'message' => 'Las contraseñas no coinciden.'];
+    }
+    if (strlen($pass1) < 8) {
+        return ['success' => false, 'message' => 'La contraseña debe tener al menos 8 caracteres.'];
+    }
+
+    $hash = hash('sha256', $token);
+    $m = Observador::find()->where(['obs_act_token_hash' => $hash])->one();
+    if (!$m) {
+        return ['success' => false, 'message' => 'El enlace de recuperación no es válido o ya fue utilizado.'];
+    }
+    if (!empty($m->obs_act_expires) && strtotime($m->obs_act_expires) < time()) {
+        return ['success' => false, 'message' => 'El enlace de recuperación ha expirado. Solicita uno nuevo.'];
+    }
+
+    // Cambiar contraseña y limpiar token
+    $m->obs_token          = password_hash($pass1, PASSWORD_BCRYPT);
+    $m->obs_act_token_hash = null;
+    $m->obs_act_expires    = null;
+    $m->updated_at         = date('Y-m-d H:i:s');
+    $m->save(false, ['obs_token','obs_act_token_hash','obs_act_expires','updated_at']);
+
+    return [
+        'success' => true,
+        'message' => 'Tu contraseña fue cambiada correctamente. Ya puedes iniciar sesión.',
+    ];
+}
+
+
 }

@@ -57,6 +57,7 @@ $get = function($item, $key, $default = null) {
                 foreach ($redes as $r) {
                     $publicada = strtoupper(trim((string)$get($r, 'red_publicada', 'NO'))) === 'SI';
                     $enlace    = trim((string)$get($r, 'red_enlace', '#'));
+                    $perfil    = trim((string)$get($r, 'red_perfil', ''));
                     $nombre    = trim((string)$get($r, 'red_nombre', ''));
                     $iconoRaw  = trim((string)$get($r, 'red_icono', ''));
 
@@ -68,7 +69,7 @@ $get = function($item, $key, $default = null) {
                     if ($publicada && $enlace) {
                         echo Html::a(
                             "<i class='$iconClass' style='color:#$color'></i>",
-                            (strpos($enlace, 'http') === 0 ? $enlace : 'https://' . $enlace),
+                            (strpos($enlace, 'http') === 0 ? $enlace : 'https://' . $enlace . '/' . $perfil),
                             [
                                 'class'  => 'social-icon',
                                 'title'  => Html::encode($nombre),
